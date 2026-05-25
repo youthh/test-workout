@@ -173,6 +173,20 @@
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: 14px; padding: 24px 22px;
     box-shadow: 0 8px 22px rgba(0,0,0,0.4);
+    animation: qSlideIn .35s cubic-bezier(.2,.7,.3,1);
+  }
+  @keyframes qSlideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .option { animation: optFadeUp .35s ease backwards; }
+  .option:nth-child(1) { animation-delay: 0.06s; }
+  .option:nth-child(2) { animation-delay: 0.12s; }
+  .option:nth-child(3) { animation-delay: 0.18s; }
+  .option:nth-child(4) { animation-delay: 0.24s; }
+  @keyframes optFadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   .question {
     font-size: clamp(16px, 4vw, 19px); margin-bottom: 22px;
@@ -529,6 +543,309 @@
   }
   .achv-card .dsc { font-size: 11px; color: var(--text-mute); line-height: 1.4; }
 
+  /* GLOSSARY */
+  .gloss-search-row {
+    display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap;
+  }
+  #gloss-search, #gloss-cat {
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 14px; border-radius: 10px;
+    font-family: inherit; font-size: 14px;
+    outline: none; transition: border-color .2s;
+  }
+  #gloss-search { flex: 1 1 200px; }
+  #gloss-cat { flex: 0 0 auto; cursor: pointer; }
+  #gloss-search:focus, #gloss-cat:focus { border-color: var(--accent); }
+  .gloss-cat-header {
+    margin-top: 24px; margin-bottom: 10px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--accent); font-weight: 700;
+  }
+  .gloss-cat-header:first-child { margin-top: 0; }
+  .gloss-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+    transition: border-color .2s;
+  }
+  .gloss-item:hover { border-color: var(--accent); }
+  .gloss-term {
+    font-weight: 700; color: var(--text);
+    font-size: 14px; margin-bottom: 5px;
+  }
+  .gloss-def { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .gloss-empty {
+    text-align: center; color: var(--text-mute);
+    padding: 40px 20px; font-size: 14px;
+  }
+
+  /* ANATOMY */
+  .anat-tabs {
+    display: flex; gap: 8px; margin-bottom: 20px;
+    background: var(--bg-card); padding: 4px; border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .anat-tab {
+    flex: 1; padding: 10px; border-radius: 8px;
+    background: transparent; border: none; cursor: pointer;
+    font-family: inherit; color: var(--text-dim);
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+    font-weight: 700; transition: all .2s;
+  }
+  .anat-tab.active {
+    background: var(--accent); color: #fff;
+  }
+  .anat-body-wrap {
+    display: flex; gap: 20px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .anat-svg-wrap {
+    flex: 1 1 280px; max-width: 320px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px; text-align: center;
+  }
+  .anat-svg-title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-mute); margin-bottom: 10px;
+  }
+  .anat-svg { width: 100%; height: auto; max-height: 480px; }
+  .anat-muscle {
+    cursor: pointer; transition: all .2s;
+    fill: rgba(230,57,70,0.25); stroke: rgba(230,57,70,0.6);
+    stroke-width: 1.5;
+  }
+  .anat-muscle:hover { fill: rgba(230,57,70,0.55); }
+  .anat-muscle.selected { fill: var(--accent); stroke: #fff; stroke-width: 2; }
+  .anat-muscle.correct { fill: var(--good); stroke: var(--good); }
+  .anat-muscle.wrong { fill: var(--bad); stroke: var(--bad); }
+  .anat-info {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; margin-bottom: 20px;
+    min-height: 80px;
+  }
+  .anat-info .name {
+    font-weight: 700; font-size: 16px; color: var(--text);
+    margin-bottom: 8px; letter-spacing: 0.5px;
+  }
+  .anat-info .desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .anat-info .placeholder { color: var(--text-mute); font-style: italic; }
+  .anat-quiz-prompt {
+    background: linear-gradient(135deg, #1a0808, #2d0a14);
+    border: 2px solid var(--accent); border-radius: 12px;
+    padding: 16px 18px; margin-bottom: 20px; text-align: center;
+  }
+  .anat-quiz-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .anat-quiz-task {
+    font-size: 18px; font-weight: 700; color: var(--text);
+  }
+  .anat-quiz-score {
+    margin-top: 12px;
+    font-size: 12px; color: var(--text-mute);
+    letter-spacing: 1px;
+  }
+
+  /* MATCH GAME */
+  .match-stats {
+    display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .match-stat {
+    flex: 1 1 100px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; text-align: center;
+  }
+  .match-stat .lbl {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-mute); margin-bottom: 4px;
+  }
+  .match-stat .val {
+    font-family: 'Impact', sans-serif; font-size: 22px;
+    color: var(--text);
+  }
+  .match-stat .val.accent { color: var(--accent); }
+  .match-stat .val.good { color: var(--good); }
+  .match-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 22px;
+  }
+  .match-col { display: flex; flex-direction: column; gap: 8px; }
+  .match-col-label {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--text-mute);
+    margin-bottom: 4px;
+  }
+  .match-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    cursor: pointer; transition: all .2s;
+    font-size: 13px; color: var(--text); line-height: 1.4;
+    text-align: left; font-family: inherit;
+    min-height: 50px;
+  }
+  .match-item:hover:not(:disabled) { border-color: var(--accent); background: #1f1f1f; }
+  .match-item.selected {
+    border-color: var(--accent); background: rgba(230,57,70,0.12);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .match-item.matched {
+    background: rgba(46,204,113,0.12); border-color: var(--good);
+    color: var(--text-dim);
+    cursor: default; pointer-events: none;
+  }
+  .match-item.shake {
+    animation: matchShake 0.4s;
+    background: rgba(230,57,70,0.18); border-color: var(--bad);
+  }
+  @keyframes matchShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-4px); }
+  }
+  .match-actions {
+    display: flex; gap: 10px; justify-content: center;
+  }
+  .match-win {
+    background: linear-gradient(135deg, #0e2616 0%, #1a3826 100%);
+    border: 2px solid var(--good); border-radius: 14px;
+    padding: 28px 22px; text-align: center; margin-bottom: 16px;
+  }
+  .match-win .emj { font-size: 56px; margin-bottom: 8px; }
+  .match-win .ttl { font-family: 'Impact', sans-serif; font-size: 28px; color: var(--good); letter-spacing: 2px; }
+  .match-win .sub { color: var(--text-dim); margin-top: 8px; font-size: 14px; }
+
+  /* CHALLENGE LINK BOX */
+  .challenge-link-box {
+    background: #0a0a0a; border: 1px solid var(--border);
+    border-radius: 10px; padding: 4px; margin-bottom: 18px;
+  }
+  .challenge-link-box input {
+    width: 100%; padding: 10px 12px;
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'Courier New', monospace;
+    font-size: 12px;
+  }
+
+  /* WELCOME MODAL */
+  .welcome-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 9991;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .welcome-overlay.show { display: flex; }
+  .welcome-modal {
+    background: linear-gradient(135deg, #161616 0%, #1f0a10 100%);
+    border: 2px solid var(--accent); border-radius: 18px;
+    padding: 32px 26px; max-width: 420px; width: 100%;
+    text-align: center; position: relative; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px var(--accent-glow);
+    animation: welcomePop .4s ease;
+  }
+  @keyframes welcomePop {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .welcome-modal::before {
+    content: ""; position: absolute; top: 0; left: -60%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    animation: shine 4s infinite;
+    pointer-events: none;
+  }
+  .welcome-icon {
+    font-size: 56px; line-height: 1; margin-bottom: 12px;
+  }
+  .welcome-title {
+    font-family: 'Impact', sans-serif;
+    font-size: clamp(24px, 6vw, 32px);
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #fff; margin-bottom: 8px;
+  }
+  .welcome-subtitle {
+    font-size: 14px; color: var(--text-dim);
+    margin-bottom: 24px; line-height: 1.5;
+  }
+  .welcome-actions {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .welcome-btn {
+    padding: 14px 18px; border-radius: 10px;
+    font-family: inherit; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    font-weight: 700; cursor: pointer; transition: all .2s;
+    border: none; min-height: 50px;
+  }
+  .welcome-btn.primary {
+    background: linear-gradient(180deg, var(--accent), #b3242f);
+    color: #fff; box-shadow: 0 6px 16px var(--accent-glow);
+  }
+  .welcome-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px var(--accent-glow); }
+  .welcome-btn.secondary {
+    background: transparent; color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .welcome-btn.secondary:hover { border-color: var(--text); color: var(--text); }
+
+  /* ONBOARDING */
+  .onb-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.78); z-index: 9990;
+    display: none; pointer-events: auto;
+  }
+  .onb-overlay.show { display: block; }
+  .onb-close {
+    position: absolute; top: 18px; right: 18px;
+    background: rgba(20,20,20,0.85); border: 1px solid var(--border);
+    color: var(--text); width: 38px; height: 38px;
+    border-radius: 50%; cursor: pointer;
+    font-size: 22px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000; transition: all .2s;
+  }
+  .onb-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
+  .onb-spotlight {
+    position: absolute; border-radius: 16px;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.78), 0 0 0 4px var(--accent), 0 0 24px var(--accent-glow);
+    transition: all .35s ease;
+    pointer-events: none;
+  }
+  .onb-tooltip {
+    position: absolute; background: var(--bg-card);
+    border: 1px solid var(--accent); border-radius: 14px;
+    padding: 18px 18px; max-width: 320px; width: 88vw;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+    transition: all .35s ease;
+  }
+  .onb-step-num {
+    display: inline-block; background: var(--accent); color: #fff;
+    padding: 3px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .onb-title {
+    font-size: 17px; font-weight: 700; color: var(--text);
+    margin-bottom: 6px; letter-spacing: 0.5px;
+  }
+  .onb-text { font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px; }
+  .onb-actions {
+    display: flex; justify-content: space-between; gap: 8px; align-items: center;
+  }
+  .onb-skip {
+    background: transparent; border: none; color: var(--text-mute);
+    cursor: pointer; font-family: inherit; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .onb-skip:hover { color: var(--text); }
+  .onb-next {
+    background: linear-gradient(180deg, var(--accent), #b3242f);
+    color: #fff; border: none; padding: 10px 18px; border-radius: 8px;
+    cursor: pointer; font-family: inherit; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;
+  }
+  .onb-next:hover { transform: translateY(-1px); }
+
   /* MISTAKES BUTTON ON CARD */
   .card-mistakes {
     display: flex; align-items: center; justify-content: space-between;
@@ -706,11 +1023,23 @@
   <div id="topic-select">
     <div class="top-actions">
       <button class="action-btn" onclick="showStats()">
-        <span class="ico">&#x1F4CA;</span><span>Мій кабінет</span>
+        <span class="ico">&#x1F4CA;</span><span>Кабінет</span>
       </button>
       <button class="action-btn" onclick="showAchievements()">
         <span class="ico">&#x1F3C5;</span><span>Досягнення</span>
         <span class="action-pill" id="achv-pill">0/0</span>
+      </button>
+      <button class="action-btn" onclick="showGlossary()">
+        <span class="ico">&#x1F4D6;</span><span>Глосарій</span>
+      </button>
+      <button class="action-btn" onclick="showAnatomy()">
+        <span class="ico">&#x1F9B4;</span><span>Анатомія</span>
+      </button>
+      <button class="action-btn" onclick="showMatch()">
+        <span class="ico">&#x1F9E9;</span><span>Match-гра</span>
+      </button>
+      <button class="action-btn" onclick="createChallenge()">
+        <span class="ico">&#x1F3AF;</span><span>Челендж другу</span>
       </button>
     </div>
     <div id="exam-block">
@@ -765,6 +1094,77 @@
       <div class="quiz-title">Досягнення</div>
     </div>
     <div id="achievements-body"></div>
+  </div>
+
+  <div class="quiz-screen" id="glossary-screen">
+    <div class="quiz-header">
+      <button class="back-btn" onclick="hideGlossary()">&larr; До тем</button>
+      <div class="quiz-title">Глосарій термінів</div>
+    </div>
+    <div class="gloss-search-row">
+      <input type="text" id="gloss-search" placeholder="Пошук терміна..." oninput="renderGlossary()">
+      <select id="gloss-cat" onchange="renderGlossary()">
+        <option value="all">Усі категорії</option>
+      </select>
+    </div>
+    <div id="glossary-body"></div>
+  </div>
+
+  <div class="quiz-screen" id="anatomy-screen">
+    <div class="quiz-header">
+      <button class="back-btn" onclick="hideAnatomy()">&larr; До тем</button>
+      <div class="quiz-title">Анатомія</div>
+    </div>
+    <div id="anatomy-body"></div>
+  </div>
+
+  <div class="welcome-overlay" id="challenge-overlay">
+    <div class="welcome-modal">
+      <div class="welcome-icon">&#x1F3AF;</div>
+      <div class="welcome-title">Челендж готовий!</div>
+      <div class="welcome-subtitle">Скопіюй посилання й кинь другу. Він пройде ТІ САМІ 10 питань — і ви порівняєте результати.</div>
+      <div class="challenge-link-box">
+        <input type="text" id="challenge-url" readonly onclick="this.select()">
+      </div>
+      <div class="welcome-actions">
+        <button class="welcome-btn primary" onclick="shareChallengeLink()">&#x1F4E4; Поділитись</button>
+        <button class="welcome-btn secondary" onclick="hideChallengeModal()">Закрити</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-screen" id="match-screen">
+    <div class="quiz-header">
+      <button class="back-btn" onclick="hideMatch()">&larr; До тем</button>
+      <div class="quiz-title">Match-гра</div>
+    </div>
+    <div id="match-body"></div>
+  </div>
+
+  <div class="welcome-overlay" id="welcome-overlay">
+    <div class="welcome-modal">
+      <div class="welcome-icon">&#x1F44B;</div>
+      <div class="welcome-title">Вітаю в Iron Academy!</div>
+      <div class="welcome-subtitle">Це твоя міні-академія тренера. Показати короткий тур по сайту? Це займе ~30 секунд.</div>
+      <div class="welcome-actions">
+        <button class="welcome-btn primary" onclick="acceptOnboarding()">&#x1F680; Так, покажи тур</button>
+        <button class="welcome-btn secondary" onclick="declineOnboarding()">Дякую, я сам</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="onb-overlay" id="onb-overlay" onclick="onbOverlayClick(event)">
+    <button class="onb-close" onclick="skipOnboarding()" title="Закрити тур">&times;</button>
+    <div class="onb-spotlight" id="onb-spotlight"></div>
+    <div class="onb-tooltip" id="onb-tooltip" onclick="event.stopPropagation()">
+      <div class="onb-step-num" id="onb-step-num">1/7</div>
+      <div class="onb-title" id="onb-title"></div>
+      <div class="onb-text" id="onb-text"></div>
+      <div class="onb-actions">
+        <button class="onb-skip" onclick="skipOnboarding()">Пропустити тур</button>
+        <button class="onb-next" id="onb-next" onclick="nextOnboardingStep()">Далі &rarr;</button>
+      </div>
+    </div>
   </div>
 
   <canvas id="fx-canvas"></canvas>
@@ -1630,7 +2030,363 @@ function renderStatsBody() {
     </div>
     <div class="section-label">По темах</div>
     <div class="topic-stats-list">${topicRows}</div>
+    <div class="section-label">Інше</div>
+    <button class="action-btn" style="width:100%" onclick="restartTour()">
+      <span class="ico">&#x1F393;</span><span>Перезапустити тур</span>
+    </button>
   `;
+}
+
+/* ============== GLOSSARY ============== */
+const GLOSSARY = [
+  // Площини, осі, рухи
+  { cat: 'Площини, осі, рухи', term: 'Сагітальна (стрілова) площина', def: 'Уявна вертикальна площина, яка пронизує тіло спереду назад і поділяє його на праву і ліву половини.' },
+  { cat: 'Площини, осі, рухи', term: 'Лобова (фронтальна) площина', def: 'Уявна вертикальна площина, паралельна до лоба і перпендикулярна до сагітальної; поділяє тіло на передню і задню частини.' },
+  { cat: 'Площини, осі, рухи', term: 'Горизонтальна площина', def: 'Уявна площина, перпендикулярна до перших двох; поділяє тіло на верхню (краніальну) і нижню (каудальну) частини.' },
+  { cat: 'Площини, осі, рухи', term: 'Фронтальна (лобова) вісь', def: 'Горизонтальна вісь, навколо якої виконують згинання (флексію) і розгинання (екстензію).' },
+  { cat: 'Площини, осі, рухи', term: 'Сагітальна (стрілова) вісь', def: 'Горизонтальна вісь, навколо якої виконують відведення (абдукцію) і приведення (аддукцію).' },
+  { cat: 'Площини, осі, рухи', term: 'Вертикальна вісь', def: 'Вісь, навколо якої виконують обертання (ротацію), пронацію та супінацію.' },
+  { cat: 'Площини, осі, рухи', term: 'Латеральний / Бічний', def: 'Розташований збоку, далі від серединної стрілової площини тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Медіальний / Присередній', def: 'Розташований ближче до серединної стрілової площини тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Проксимальний / Ближчий', def: 'Розташований ближче до тулуба; вживається для опису частин кінцівок.' },
+  { cat: 'Площини, осі, рухи', term: 'Дистальний / Дальший', def: 'Розташований далі від тулуба; для опису частин кінцівок.' },
+  { cat: 'Площини, осі, рухи', term: 'Superior / Верхній', def: 'Розташований ближче до голови або у вищій позиції.' },
+  { cat: 'Площини, осі, рухи', term: 'Inferior / Нижній', def: 'Розташований ближче до ніг або у нижчій позиції.' },
+  { cat: 'Площини, осі, рухи', term: 'Anterior / Передній', def: 'Ближче до передньої (вентральної) частини тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Posterior / Задній', def: 'Ближче до задньої (дорсальної) частини тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Superficial / Поверхневий', def: 'Розташований ближче до поверхні тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Deep / Глибокий', def: 'Розташований далі від поверхні тіла, у глибині.' },
+  { cat: 'Площини, осі, рухи', term: 'Флексія (згинання)', def: 'Зменшення кута між частинами тіла, наприклад згинання у ліктьовому або колінному суглобах.' },
+  { cat: 'Площини, осі, рухи', term: 'Екстензія (розгинання)', def: 'Збільшення кута між частинами тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Абдукція (відведення)', def: 'Рух кінцівки від серединної лінії тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Аддукція (приведення)', def: 'Рух кінцівки до серединної лінії тіла.' },
+  { cat: 'Площини, осі, рухи', term: 'Ротація', def: 'Поворот частини тіла навколо вертикальної осі. Може бути внутрішньою або зовнішньою.' },
+  { cat: 'Площини, осі, рухи', term: 'Пронація', def: 'Обертання передпліччя або стопи так, що долоня (підошва) повертається вниз або всередину.' },
+  { cat: 'Площини, осі, рухи', term: 'Супінація', def: 'Обертання у зворотному напрямку: долоня (підошва) повертається вгору або назовні.' },
+  { cat: 'Площини, осі, рухи', term: 'Циркумдукція', def: 'Круговий рух, який поєднує згинання, розгинання, відведення і приведення; кінцівка описує конус.' },
+  { cat: 'Площини, осі, рухи', term: 'Дорсифлексія', def: 'Підняття стопи догори у напрямку до гомілки.' },
+  { cat: 'Площини, осі, рухи', term: 'Плантарна флексія', def: 'Опускання стопи вниз, у напрямку підошви.' },
+  { cat: 'Площини, осі, рухи', term: 'Інверсія', def: 'Рух стопи, при якому підошва повертається всередину.' },
+  { cat: 'Площини, осі, рухи', term: 'Еверсія', def: 'Рух стопи, при якому підошва повертається назовні.' },
+  { cat: 'Площини, осі, рухи', term: 'Елевація', def: 'Підняття частини тіла, зокрема плечей або лопаток.' },
+  { cat: 'Площини, осі, рухи', term: 'Депресія', def: 'Опускання частини тіла (плечей, лопаток).' },
+  { cat: 'Площини, осі, рухи', term: 'Протракція', def: 'Висування частини тіла вперед (наприклад, лопаток або нижньої щелепи).' },
+  { cat: 'Площини, осі, рухи', term: 'Ретракція', def: 'Повернення частини тіла назад після протракції.' },
+  { cat: 'Площини, осі, рухи', term: 'Анатомічна позиція', def: 'Положення стоячи з опущеними руками і повернутими вперед долонями — базова анатомічна референція.' },
+
+  // Кістки
+  { cat: 'Кістки', term: 'Скелет', def: 'Сукупність кісток організму (206–210 у дорослого); поділяється на осьовий і додатковий.' },
+  { cat: 'Кістки', term: 'Хребет (columna vertebralis)', def: 'S-подібний стовп з 33–34 хребців: 7 шийних, 12 грудних, 5 поперекових, 5 крижових, 2–4 куприкових.' },
+  { cat: 'Кістки', term: 'Атлант (atlas)', def: 'I шийний хребець; кільцеподібний, без тіла й остистого відростка. З\'єднує череп з хребтом.' },
+  { cat: 'Кістки', term: 'Осьовий хребець (axis)', def: 'II шийний хребець; має «зуб» (dens), навколо якого атлант разом із черепом обертається.' },
+  { cat: 'Кістки', term: 'Vertebra prominens', def: 'VII шийний хребець із найдовшим остистим відростком; орієнтир межі шиї та спини.' },
+  { cat: 'Кістки', term: 'Епіфіз', def: 'Потовщений кінцевий наросток довгої трубчастої кістки.' },
+  { cat: 'Кістки', term: 'Діафіз (diaphysis)', def: 'Середня видовжена частина довгої трубчастої кістки.' },
+  { cat: 'Кістки', term: 'Метафіз', def: 'Ділянка між діафізом і епіфізом; у дітей містить ростовий хрящ.' },
+  { cat: 'Кістки', term: 'Стегнова кістка (femur)', def: 'Найбільша довга трубчаста кістка; шийка з\'єднує головку з тілом під кутом ≈130°.' },
+  { cat: 'Кістки', term: 'Плечова кістка (humerus)', def: 'Кістка плеча; містить великий і малий горбки, виросток з блоком та головочкою.' },
+  { cat: 'Кістки', term: 'Ліктьова кістка (ulna)', def: 'Присередня кістка передпліччя; містить блокову вирізку для з\'єднання з плечовою кісткою.' },
+  { cat: 'Кістки', term: 'Променева кістка (radius)', def: 'Бічна кістка передпліччя; її головка обертається при пронації/супінації.' },
+  { cat: 'Кістки', term: 'Великогомілкова (tibia)', def: 'Найтовща кістка гомілки; утворює колінний і надп\'ятково-гомілковий суглоби.' },
+  { cat: 'Кістки', term: 'Малогомілкова (fibula)', def: 'Тонка кістка гомілки; її дистальна частина утворює бічну кісточку.' },
+  { cat: 'Кістки', term: 'Ключиця', def: 'S-подібна кістка між грудниною і надплечовим відростком лопатки.' },
+  { cat: 'Кістки', term: 'Лопатка', def: 'Плоска трикутна кістка ззаду грудної клітки; містить акроміон, ость і суглобову западину.' },
+  { cat: 'Кістки', term: 'Кульшова кістка', def: 'Утворена зрослими до 13–16 років клубовою, лобковою і сідничою кістками.' },
+  { cat: 'Кістки', term: 'Куприк', def: 'Гомолог хвостового скелета; 3–5 рудиментарних хребців.' },
+  { cat: 'Кістки', term: 'Груднина (sternum)', def: '3 частини: ручка, тіло, мечоподібний відросток. Із нею з\'єднуються справжні ребра.' },
+  { cat: 'Кістки', term: 'Ребра справжні', def: 'Сім верхніх пар ребер (I–VII), які хрящем безпосередньо з\'єднуються з грудниною.' },
+  { cat: 'Кістки', term: 'Ребра несправжні', def: 'Пари VIII–X; з\'єднуються не з грудниною, а з хрящем вищого ребра.' },
+  { cat: 'Кістки', term: 'Ребра коливні', def: 'XI–XII пари ребер з короткими хрящами, що закінчуються у м\'язах черевної стінки.' },
+  { cat: 'Кістки', term: 'Остеон (канал Гаверса)', def: 'Базова структурна одиниця щільної кісткової речовини; центральний канал з пластинками навколо.' },
+  { cat: 'Кістки', term: 'Окістя', def: 'Сполучнотканинна пластинка на поверхні кістки; відповідає за ріст у товщину і регенерацію.' },
+  { cat: 'Кістки', term: 'Робоча гіпертрофія', def: 'Збільшення товщини щільної речовини кістки при тривалому навантаженні.' },
+
+  // М'язи
+  { cat: 'М\'язи', term: 'Дельтоподібний м\'яз', def: 'Покриває плечовий суглоб; передні пучки згинають, бічні відводять, задні розгинають плече.' },
+  { cat: 'М\'язи', term: 'Трапецієподібний м\'яз', def: 'Верхні пучки піднімають лопатку, нижні опускають; при повному скороченні наближає її до хребта.' },
+  { cat: 'М\'язи', term: 'Найширший м\'яз спини (latissimus dorsi)', def: 'Прикріплюється до гребеня малого горбка плечової кістки; приводить, пронує і розгинає плече.' },
+  { cat: 'М\'язи', term: 'Двоголовий м\'яз плеча (biceps)', def: 'Цільовий м\'яз згинання передпліччя; потужний супінатор. Довга головка від надсуглобового горбка.' },
+  { cat: 'М\'язи', term: 'Триголовий м\'яз плеча (triceps)', def: 'Розгинач передпліччя. Довга головка — двосуглобова, перетинає і плечовий суглоб.' },
+  { cat: 'М\'язи', term: 'Великий грудний м\'яз', def: '3 частини: ключична, груднино-реброва, черевна. Прикріплюється до гребеня великого горбка.' },
+  { cat: 'М\'язи', term: 'Малий грудний м\'яз', def: 'Прикріплюється до дзьобоподібного відростка лопатки; тягне її вперед і вниз.' },
+  { cat: 'М\'язи', term: 'М\'яз-випрямляч хребта (erector spinae)', def: 'Найпотужніший м\'яз спини; поділяється на 3 тракти — клубово-ребровий, найдовший, остьовий.' },
+  { cat: 'М\'язи', term: 'Підлопатковий м\'яз', def: 'Цільовий при внутрішній ротації плеча; частина ротаторної манжети.' },
+  { cat: 'М\'язи', term: 'Підостьовий м\'яз', def: 'Цільовий при зовнішній ротації плеча разом з малим круглим.' },
+  { cat: 'М\'язи', term: 'Малий круглий м\'яз', def: 'Виконує зовнішню ротацію плеча; частина ротаторної манжети.' },
+  { cat: 'М\'язи', term: 'Великий круглий м\'яз', def: 'Розгинає і приводить плече; синергіст найширшого у тягах.' },
+  { cat: 'М\'язи', term: 'Передній зубчастий м\'яз', def: 'Прикріплюється до присереднього краю і нижнього кута лопатки; тягне її вперед.' },
+  { cat: 'М\'язи', term: 'М\'яз-підіймач лопатки', def: 'Найтовщий з плоских м\'язів спини; піднімає верхній кут лопатки.' },
+  { cat: 'М\'язи', term: 'Ромбоподібні м\'язи', def: 'Наближають лопатку до хребта і піднімають її догори.' },
+  { cat: 'М\'язи', term: 'Чотириголовий м\'яз стегна (quadriceps)', def: 'Цільовий розгинач коліна; складається з 4 головок, прямий м\'яз — двосуглобовий.' },
+  { cat: 'М\'язи', term: 'Задня група м\'язів стегна', def: 'Півперетинчастий, півсухожилковий, двоголовий стегна. Цільові при згинанні гомілки.' },
+  { cat: 'М\'язи', term: 'Великий сідничний', def: 'Цільовий розгинач стегна; основний м\'яз сідниць.' },
+  { cat: 'М\'язи', term: 'Середній сідничний', def: 'Цільовий при відведенні стегна; стабілізує таз під час ходьби.' },
+  { cat: 'М\'язи', term: 'Привідні м\'язи стегна', def: 'Виконують приведення стегна; стабілізують кульшовий суглоб при ходьбі, бігу, плаванні.' },
+  { cat: 'М\'язи', term: 'Литковий м\'яз', def: 'Триголовий разом з камбалоподібним; виконує плантарну флексію стопи.' },
+  { cat: 'М\'язи', term: 'Дзьобо-плечовий м\'яз', def: 'Згинач плеча; стабілізатор у згинаннях передпліччя.' },
+  { cat: 'М\'язи', term: 'Плече-променевий м\'яз', def: 'Цільовий у згинаннях передпліччя нейтральним хватом («молотки»).' },
+  { cat: 'М\'язи', term: 'Багатороздільні м\'язи', def: 'Перекидаються через 2–4 хребці; повертають хребет і нахиляють його у бік.' },
+  { cat: 'М\'язи', term: 'Ротаторна манжета плеча', def: 'Підлопатковий, надостьовий, підостьовий, малий круглий — стабілізують головку плечової кістки.' },
+  { cat: 'М\'язи', term: 'Найдовший м\'яз', def: 'Проміжний тракт м\'яза-випрямляча хребта; розгинає хребет.' },
+  { cat: 'М\'язи', term: 'Клубово-ребровий м\'яз', def: 'Бічний тракт м\'яза-випрямляча хребта; розгинає хребет, опускає ребра.' },
+  { cat: 'М\'язи', term: 'Остьовий м\'яз', def: 'Присередній тракт м\'яза-випрямляча хребта; розгинає хребет і закидає голову назад.' },
+  { cat: 'М\'язи', term: 'М\'язи кору', def: 'Глибокі м\'язи живота і поперекового відділу, що стабілізують хребет і таз під навантаженням.' },
+
+  // Біомеханіка
+  { cat: 'Біомеханіка', term: 'Нейтральне положення хребта (НПХ)', def: 'Стан, при якому фізіологічні вигини усіх відділів зберігаються у рамках норми; рівномірний розподіл навантаження.' },
+  { cat: 'Біомеханіка', term: 'Постава', def: 'Звична, невимушена поза людини під час сидіння, стояння та ходьби.' },
+  { cat: 'Біомеханіка', term: 'Технічна постава', def: 'Раціональне розташування ланок тіла і зорового контролю у типових робочих положеннях для найвищої ефективності.' },
+  { cat: 'Біомеханіка', term: 'Осьове витяжіння', def: 'Стан подовження хребта по осі для розвантаження дисків.' },
+  { cat: 'Біомеханіка', term: 'Joint-by-Joint Model', def: 'Модель Cook/Boyle: суглоби чергуються за функцією — мобільність → стабільність → мобільність...' },
+  { cat: 'Біомеханіка', term: 'Мобільність', def: 'Здатність суглоба рухатись у функціонально необхідному діапазоні без компенсаторних рухів.' },
+  { cat: 'Біомеханіка', term: 'Стабільність', def: 'Здатність зберігати контрольоване положення суглоба під впливом внутрішніх і зовнішніх сил.' },
+  { cat: 'Біомеханіка', term: 'Пропріоцепція', def: 'Внутрішнє відчуття положення та руху сегментів тіла без зорового контролю.' },
+  { cat: 'Біомеханіка', term: 'Моторний контроль', def: 'Здатність нервової системи організовувати, координувати і регулювати рух.' },
+  { cat: 'Біомеханіка', term: 'Core-to-Extremity', def: 'Принцип передачі сили, стабільності і контролю від центру тіла (Core) до кінцівок.' },
+  { cat: 'Біомеханіка', term: 'FMS (Functional Movement Screen)', def: 'Інструмент скринінгу рухової якості; виявляє дисфункції та асиметрії перед навантаженнями.' },
+  { cat: 'Біомеханіка', term: 'SFMA', def: 'Selective Functional Movement Assessment — поглиблений варіант оцінки для діагностики порушень руху.' },
+  { cat: 'Біомеханіка', term: 'Лордоз', def: 'Фізіологічний вигин хребта вперед (шийний, поперековий).' },
+  { cat: 'Біомеханіка', term: 'Кіфоз', def: 'Фізіологічний вигин хребта назад (грудний, крижовий).' },
+  { cat: 'Біомеханіка', term: 'Активна недостатність', def: 'Стан, коли двосуглобовий м\'яз надто скорочений і не може розвинути максимальне зусилля.' },
+  { cat: 'Біомеханіка', term: 'Пасивна недостатність', def: 'Стан, коли двосуглобовий м\'яз надто розтягнутий і не може розвинути зусилля.' },
+  { cat: 'Біомеханіка', term: 'Цільовий м\'яз', def: 'М\'яз, на який спрямована основна робота у вправі.' },
+  { cat: 'Біомеханіка', term: 'Синергіст', def: 'М\'яз, що допомагає цільовому виконувати рух.' },
+  { cat: 'Біомеханіка', term: 'Стабілізатор', def: 'М\'яз, що утримує суглоб або сегмент тіла в стабільному положенні під час руху.' },
+  { cat: 'Біомеханіка', term: 'Антагоніст', def: 'М\'яз, що виконує протилежну функцію стосовно цільового (агоніста).' },
+  { cat: 'Біомеханіка', term: 'Субакроміальний простір', def: 'Простір між акроміоном лопатки і великим горбком плечової кістки; через нього проходять сухожилля.' },
+  { cat: 'Біомеханіка', term: 'Підакроміальна бурса', def: 'Синовіальна сумка у субакроміальному просторі; найчастіше травмується при компресії.' },
+
+  // Піраміда розвитку
+  { cat: 'Піраміда розвитку', term: 'Movement (Рухова компетентність)', def: 'Перший рівень піраміди: мобільність, стабільність, контроль, симетрія.' },
+  { cat: 'Піраміда розвитку', term: 'Performance (Фізичні якості)', def: 'Другий рівень: сила, витривалість, швидкість, гнучкість, координація.' },
+  { cat: 'Піраміда розвитку', term: 'Skill (Спортивні навички)', def: 'Третій рівень: спеціалізовані спортивні навички, спеціалізація.' },
+  { cat: 'Піраміда розвитку', term: 'Gray Cook', def: 'Автор моделі піраміди і концепції FMS; популяризатор принципу «Move well first, then move often».' },
+  { cat: 'Піраміда розвитку', term: 'Michael Boyle', def: 'Співавтор Joint-by-Joint Model; тренер з фізичної підготовки.' },
+
+  // Психологія
+  { cat: 'Психологія', term: 'Темперамент', def: 'Сукупність вроджених індивідуальних особливостей особистості, що визначають рівень активності та емоційності.' },
+  { cat: 'Психологія', term: 'Сангвінік', def: 'Рухливий, товариський, оптимістичний. Любить активні рухливі вправи; на змаганнях зазвичай вищий за тренування.' },
+  { cat: 'Психологія', term: 'Холерик', def: 'Перевага збудження над гальмуванням. Полюбляє інтенсивні темпові вправи; інтерес швидко згасає.' },
+  { cat: 'Психологія', term: 'Флегматик', def: 'Переважання гальмування. Працелюбний, схильний до кропіткого відпрацювання техніки і одноманітних вправ.' },
+  { cat: 'Психологія', term: 'Меланхолік', def: 'Слабкість процесів збудження і гальмування. Тривожний, схильний до «стартової апатії».' },
+  { cat: 'Психологія', term: 'Опитувальник Айзенка', def: 'Найрозповсюдженіший тест для визначення типу темпераменту.' },
+  { cat: 'Психологія', term: 'Візуал', def: 'Пряма поза, високе грудне дихання, швидкий чистий голос. Дистанція велика. Слово: «гарно».' },
+  { cat: 'Психологія', term: 'Аудіал', def: '«Телефонна поза», мелодійний ритмічний голос. Багатословний. Слово: «тихо». Правило: «щоб почути — не дивись».' },
+  { cat: 'Психологія', term: 'Кінестет', def: 'Розслаблена поза, низьке черевне дихання, повільний голос. Близька дистанція. Слово: «зручно».' },
+  { cat: 'Психологія', term: 'Дигітал', def: 'Схрещені руки, монотонний голос, обмежене дихання. При стресі — надраціональний. Слово: «функціонально».' },
+  { cat: 'Психологія', term: 'Підлаштування (раппорт)', def: 'Налаштування на клієнта по 6 каналах: фізіологія, голос, мова, досвід, цінності, дихання.' },
+  { cat: 'Психологія', term: 'Бойова готовність', def: 'Передзмагальний стан з оптимальним рівнем збудження для виступу.' },
+  { cat: 'Психологія', term: 'Передстартова лихоманка', def: 'Надмірне збудження перед стартом, що часто завадить реалізувати можливості.' },
+  { cat: 'Психологія', term: 'Стартова апатія', def: 'Знижена активність і невпевненість перед стартом, типова для меланхоліків.' },
+];
+
+function showGlossary() {
+  $("topic-select").style.display = "none";
+  $("quiz-screen").classList.remove("active");
+  $("result-screen").classList.remove("active");
+  $("stats-screen").classList.remove("active");
+  $("achievements-screen").classList.remove("active");
+  $("anatomy-screen").classList.remove("active");
+  $("glossary-screen").classList.add("active");
+  // Fill category dropdown
+  const cats = Array.from(new Set(GLOSSARY.map(g => g.cat)));
+  const sel = $("gloss-cat");
+  if (sel.options.length === 1) {
+    cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+  }
+  renderGlossary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hideGlossary() {
+  $("glossary-screen").classList.remove("active");
+  $("topic-select").style.display = "block";
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function renderGlossary() {
+  const q = ($("gloss-search").value || '').trim().toLowerCase();
+  const cat = $("gloss-cat").value;
+  const filtered = GLOSSARY.filter(g => {
+    if (cat !== 'all' && g.cat !== cat) return false;
+    if (!q) return true;
+    return g.term.toLowerCase().includes(q) || g.def.toLowerCase().includes(q);
+  });
+  if (filtered.length === 0) {
+    $("glossary-body").innerHTML = '<div class="gloss-empty">Не знайдено. Спробуй іншим словом.</div>';
+    return;
+  }
+  // Group by category
+  const groups = {};
+  filtered.forEach(g => { if (!groups[g.cat]) groups[g.cat] = []; groups[g.cat].push(g); });
+  let html = '';
+  Object.keys(groups).forEach(catName => {
+    html += '<div class="gloss-cat-header">' + catName + ' (' + groups[catName].length + ')</div>';
+    groups[catName].forEach(g => {
+      html += '<div class="gloss-item"><div class="gloss-term">' + g.term + '</div><div class="gloss-def">' + g.def + '</div></div>';
+    });
+  });
+  $("glossary-body").innerHTML = html;
+}
+
+/* ============== ANATOMY ============== */
+// М'язи + позиції на SVG тіла. view: 'front' or 'back'. Ellipse parameters.
+const MUSCLES = [
+  // FRONT
+  { id: 'deltoid_f',   view: 'front', name: 'Дельтоподібний м\'яз',         desc: 'Покриває плечовий суглоб. Передні пучки згинають, бічні відводять плече.', shape: 'ellipse', cx: 60,  cy: 75,  rx: 13, ry: 18 },
+  { id: 'deltoid_f2',  view: 'front', name: 'Дельтоподібний м\'яз',         desc: 'Покриває плечовий суглоб. Передні пучки згинають, бічні відводять плече.', shape: 'ellipse', cx: 140, cy: 75,  rx: 13, ry: 18 },
+  { id: 'pec_major',   view: 'front', name: 'Великий грудний м\'яз',        desc: '3 частини. Приводить руку, обертає її досередини. Прикріплення — гребінь великого горбка.', shape: 'ellipse', cx: 100, cy: 90,  rx: 32, ry: 18 },
+  { id: 'biceps_l',    view: 'front', name: 'Двоголовий м\'яз плеча',       desc: 'Цільовий згинач передпліччя. Потужний супінатор. Двосуглобовий.', shape: 'ellipse', cx: 52,  cy: 115, rx: 9,  ry: 18 },
+  { id: 'biceps_r',    view: 'front', name: 'Двоголовий м\'яз плеча',       desc: 'Цільовий згинач передпліччя. Потужний супінатор. Двосуглобовий.', shape: 'ellipse', cx: 148, cy: 115, rx: 9,  ry: 18 },
+  { id: 'abs',         view: 'front', name: 'Прямий м\'яз живота',          desc: 'Згинає тулуб. Стабілізатор кору. Тренується скручуваннями.', shape: 'rect',    x: 90,  y: 115, w: 20, h: 50, rx: 6 },
+  { id: 'obliques_l',  view: 'front', name: 'Косі м\'язи живота',           desc: 'Зовнішні і внутрішні косі: ротація та латеральне згинання тулуба.', shape: 'ellipse', cx: 80,  cy: 135, rx: 7,  ry: 22 },
+  { id: 'obliques_r',  view: 'front', name: 'Косі м\'язи живота',           desc: 'Зовнішні і внутрішні косі: ротація та латеральне згинання тулуба.', shape: 'ellipse', cx: 120, cy: 135, rx: 7,  ry: 22 },
+  { id: 'quads_l',     view: 'front', name: 'Чотириголовий м\'яз стегна',   desc: 'Цільовий розгинач коліна. 4 головки. Прямий м\'яз — двосуглобовий.', shape: 'ellipse', cx: 80,  cy: 215, rx: 14, ry: 32 },
+  { id: 'quads_r',     view: 'front', name: 'Чотириголовий м\'яз стегна',   desc: 'Цільовий розгинач коліна. 4 головки. Прямий м\'яз — двосуглобовий.', shape: 'ellipse', cx: 120, cy: 215, rx: 14, ry: 32 },
+  { id: 'adductors_l', view: 'front', name: 'Привідні м\'язи стегна',       desc: 'Приведення стегна. Стабілізують кульшовий суглоб при ходьбі/бігу/плаванні.', shape: 'ellipse', cx: 92,  cy: 215, rx: 6,  ry: 25 },
+  { id: 'adductors_r', view: 'front', name: 'Привідні м\'язи стегна',       desc: 'Приведення стегна. Стабілізують кульшовий суглоб при ходьбі/бігу/плаванні.', shape: 'ellipse', cx: 108, cy: 215, rx: 6,  ry: 25 },
+  { id: 'shin_l',      view: 'front', name: 'Передній великогомілковий',     desc: 'Виконує дорсифлексію стопи (підняття носка догори).', shape: 'ellipse', cx: 82,  cy: 295, rx: 7,  ry: 22 },
+  { id: 'shin_r',      view: 'front', name: 'Передній великогомілковий',     desc: 'Виконує дорсифлексію стопи (підняття носка догори).', shape: 'ellipse', cx: 118, cy: 295, rx: 7,  ry: 22 },
+
+  // BACK
+  { id: 'traps',       view: 'back',  name: 'Трапецієподібний м\'яз',        desc: 'Верхні пучки піднімають лопатку, нижні опускають. Усі частини — наближають до хребта.', shape: 'polygon', points: '100,55 70,80 100,115 130,80' },
+  { id: 'deltoid_b',   view: 'back',  name: 'Дельтоподібний (задня)',        desc: 'Задні пучки розгинають плече. Цільові у горизонтальному відведенні рук у нахилі.', shape: 'ellipse', cx: 60,  cy: 80, rx: 13, ry: 18 },
+  { id: 'deltoid_b2',  view: 'back',  name: 'Дельтоподібний (задня)',        desc: 'Задні пучки розгинають плече. Цільові у горизонтальному відведенні рук у нахилі.', shape: 'ellipse', cx: 140, cy: 80, rx: 13, ry: 18 },
+  { id: 'lats',        view: 'back',  name: 'Найширший м\'яз спини',         desc: 'Прикріплення — гребінь малого горбка плечової кістки. Приводить, пронує, розгинає плече.', shape: 'polygon', points: '75,105 125,105 130,160 100,170 70,160' },
+  { id: 'triceps_l',   view: 'back',  name: 'Триголовий м\'яз плеча',        desc: 'Розгинач передпліччя. Довга головка — двосуглобова (перетинає плечовий).', shape: 'ellipse', cx: 50,  cy: 120, rx: 9,  ry: 22 },
+  { id: 'triceps_r',   view: 'back',  name: 'Триголовий м\'яз плеча',        desc: 'Розгинач передпліччя. Довга головка — двосуглобова (перетинає плечовий).', shape: 'ellipse', cx: 150, cy: 120, rx: 9,  ry: 22 },
+  { id: 'erector',     view: 'back',  name: 'М\'яз-випрямляч хребта',       desc: '3 тракти: клубово-ребровий, найдовший, остьовий. Розгинає хребет, закидає голову назад.', shape: 'rect',    x: 92,  y: 105, w: 16, h: 65, rx: 5 },
+  { id: 'glutes_l',    view: 'back',  name: 'Великий сідничний',              desc: 'Цільовий розгинач стегна. Основний м\'яз сідниць.', shape: 'ellipse', cx: 82,  cy: 180, rx: 16, ry: 18 },
+  { id: 'glutes_r',    view: 'back',  name: 'Великий сідничний',              desc: 'Цільовий розгинач стегна. Основний м\'яз сідниць.', shape: 'ellipse', cx: 118, cy: 180, rx: 16, ry: 18 },
+  { id: 'hams_l',      view: 'back',  name: 'Задня група м\'язів стегна',    desc: 'Півперетинчастий, півсухожилковий, двоголовий стегна. Цільові при згинанні гомілки.', shape: 'ellipse', cx: 82,  cy: 230, rx: 13, ry: 28 },
+  { id: 'hams_r',      view: 'back',  name: 'Задня група м\'язів стегна',    desc: 'Півперетинчастий, півсухожилковий, двоголовий стегна. Цільові при згинанні гомілки.', shape: 'ellipse', cx: 118, cy: 230, rx: 13, ry: 28 },
+  { id: 'calves_l',    view: 'back',  name: 'Литковий м\'яз',                 desc: 'Триголовий разом з камбалоподібним. Виконує плантарну флексію стопи.', shape: 'ellipse', cx: 85,  cy: 300, rx: 9,  ry: 22 },
+  { id: 'calves_r',    view: 'back',  name: 'Литковий м\'яз',                 desc: 'Триголовий разом з камбалоподібним. Виконує плантарну флексію стопи.', shape: 'ellipse', cx: 115, cy: 300, rx: 9,  ry: 22 },
+];
+
+function bodyOutlinePath(view) {
+  // Спрощений силует — однаковий для front і back
+  return '<path d="M100,15 C112,15 122,25 122,38 C122,48 117,58 110,62 L115,72 L138,82 L168,150 L155,165 L142,150 L138,140 L132,150 L130,200 L130,310 L128,360 L132,375 L120,385 L115,370 L112,310 L105,240 L100,240 L95,240 L88,310 L85,370 L80,385 L68,375 L72,360 L70,310 L70,200 L68,150 L62,140 L58,150 L45,165 L32,150 L62,82 L85,72 L90,62 C83,58 78,48 78,38 C78,25 88,15 100,15 Z" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1.5"/>';
+}
+
+function svgFor(view, opts) {
+  opts = opts || {};
+  const muscles = MUSCLES.filter(m => m.view === view);
+  const shapes = muscles.map(m => {
+    const cls = 'anat-muscle' + (opts.selected === m.id ? ' selected' : '') + (opts.correct === m.id ? ' correct' : '') + (opts.wrong === m.id ? ' wrong' : '');
+    const onclick = opts.onclick ? ' onclick="' + opts.onclick + '(\'' + m.id + '\')"' : '';
+    if (m.shape === 'ellipse') {
+      return '<ellipse class="' + cls + '" cx="' + m.cx + '" cy="' + m.cy + '" rx="' + m.rx + '" ry="' + m.ry + '"' + onclick + '><title>' + m.name + '</title></ellipse>';
+    }
+    if (m.shape === 'rect') {
+      return '<rect class="' + cls + '" x="' + m.x + '" y="' + m.y + '" width="' + m.w + '" height="' + m.h + '" rx="' + (m.rx || 4) + '"' + onclick + '><title>' + m.name + '</title></rect>';
+    }
+    if (m.shape === 'polygon') {
+      return '<polygon class="' + cls + '" points="' + m.points + '"' + onclick + '><title>' + m.name + '</title></polygon>';
+    }
+    return '';
+  }).join('');
+  return '<svg class="anat-svg" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">' + bodyOutlinePath(view) + shapes + '</svg>';
+}
+
+let anatomyMode = 'view'; // 'view' or 'quiz'
+let anatomyQuiz = null;   // { target, asked, correct }
+
+function showAnatomy() {
+  $("topic-select").style.display = "none";
+  $("quiz-screen").classList.remove("active");
+  $("result-screen").classList.remove("active");
+  $("stats-screen").classList.remove("active");
+  $("achievements-screen").classList.remove("active");
+  $("glossary-screen").classList.remove("active");
+  $("anatomy-screen").classList.add("active");
+  anatomyMode = 'view';
+  anatomyQuiz = null;
+  renderAnatomy();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hideAnatomy() {
+  $("anatomy-screen").classList.remove("active");
+  $("topic-select").style.display = "block";
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderAnatomy() {
+  const tabs = '<div class="anat-tabs">' +
+    '<button class="anat-tab ' + (anatomyMode === 'view' ? 'active' : '') + '" onclick="setAnatMode(\'view\')">Огляд</button>' +
+    '<button class="anat-tab ' + (anatomyMode === 'quiz' ? 'active' : '') + '" onclick="setAnatMode(\'quiz\')">Тренувальний режим</button>' +
+    '</div>';
+  if (anatomyMode === 'view') {
+    const info = '<div class="anat-info" id="anat-info"><span class="placeholder">Натисни на м\'яз, щоб дізнатись більше</span></div>';
+    const bodies = '<div class="anat-body-wrap">' +
+      '<div class="anat-svg-wrap"><div class="anat-svg-title">Передній вигляд</div>' + svgFor('front', { onclick: 'selectMuscle' }) + '</div>' +
+      '<div class="anat-svg-wrap"><div class="anat-svg-title">Задній вигляд</div>' + svgFor('back', { onclick: 'selectMuscle' }) + '</div>' +
+    '</div>';
+    $("anatomy-body").innerHTML = tabs + info + bodies;
+  } else {
+    if (!anatomyQuiz) startAnatomyQuiz();
+    const targetMuscle = MUSCLES.find(m => m.id === anatomyQuiz.target);
+    const prompt = '<div class="anat-quiz-prompt"><div class="anat-quiz-label">Знайди м\'яз</div><div class="anat-quiz-task">' + targetMuscle.name + '</div><div class="anat-quiz-score">Правильно: ' + anatomyQuiz.correct + ' / ' + anatomyQuiz.asked + '</div></div>';
+    const opts = {
+      onclick: 'guessMuscle',
+      selected: anatomyQuiz.lastSelected,
+      correct: anatomyQuiz.showCorrect,
+      wrong: anatomyQuiz.showWrong
+    };
+    const bodies = '<div class="anat-body-wrap">' +
+      '<div class="anat-svg-wrap"><div class="anat-svg-title">Передній вигляд</div>' + svgFor('front', opts) + '</div>' +
+      '<div class="anat-svg-wrap"><div class="anat-svg-title">Задній вигляд</div>' + svgFor('back', opts) + '</div>' +
+    '</div>';
+    $("anatomy-body").innerHTML = tabs + prompt + bodies;
+  }
+}
+
+function setAnatMode(m) {
+  anatomyMode = m;
+  anatomyQuiz = null;
+  renderAnatomy();
+}
+
+function selectMuscle(id) {
+  const m = MUSCLES.find(x => x.id === id);
+  if (!m) return;
+  document.querySelectorAll('.anat-muscle.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.anat-muscle').forEach(el => {
+    if (el.getAttribute('onclick') && el.getAttribute('onclick').indexOf("'" + id + "'") > -1) el.classList.add('selected');
+  });
+  const info = $("anat-info");
+  if (info) info.innerHTML = '<div class="name">' + m.name + '</div><div class="desc">' + m.desc + '</div>';
+}
+
+function startAnatomyQuiz() {
+  // Унікальні м'язи (одна назва — один target)
+  const uniq = [];
+  const seen = new Set();
+  MUSCLES.forEach(m => { if (!seen.has(m.name)) { seen.add(m.name); uniq.push(m); } });
+  const target = uniq[Math.floor(Math.random() * uniq.length)];
+  if (anatomyQuiz) {
+    anatomyQuiz.target = target.id;
+    anatomyQuiz.lastSelected = null;
+    anatomyQuiz.showCorrect = null;
+    anatomyQuiz.showWrong = null;
+  } else {
+    anatomyQuiz = { target: target.id, asked: 0, correct: 0, lastSelected: null, showCorrect: null, showWrong: null };
+  }
+}
+
+function guessMuscle(id) {
+  if (!anatomyQuiz) return;
+  if (anatomyQuiz.showCorrect) return; // вже відповіли, чекаємо наступного
+  const target = MUSCLES.find(m => m.id === anatomyQuiz.target);
+  const targetName = target.name;
+  const guessed = MUSCLES.find(m => m.id === id);
+  const isCorrect = guessed.name === targetName;
+  anatomyQuiz.asked++;
+  if (isCorrect) anatomyQuiz.correct++;
+  // Show correct/wrong; зеленим — будь-який з м'язів з тією ж назвою (бо ліве/праве)
+  const correctId = MUSCLES.find(m => m.name === targetName).id;
+  anatomyQuiz.showCorrect = correctId;
+  anatomyQuiz.showWrong = isCorrect ? null : id;
+  renderAnatomy();
+  setTimeout(() => { startAnatomyQuiz(); renderAnatomy(); }, 1400);
 }
 
 function renderAchievementsBody() {
@@ -2071,7 +2827,347 @@ function runSadFall(durationMs) {
   fxRaf = requestAnimationFrame(frame);
 }
 
+/* ============== MATCH GAME ============== */
+const MATCH_PAIRS = [
+  { term: "Найширший м'яз спини", match: "Прикріплюється до гребеня малого горбка плечової кістки" },
+  { term: "Великий грудний м'яз", match: "Прикріплюється до гребеня великого горбка плечової кістки" },
+  { term: "Малий грудний м'яз", match: "Прикріплюється до дзьобоподібного відростка лопатки" },
+  { term: "Двоголовий м'яз плеча", match: "Потужний супінатор передпліччя" },
+  { term: "Триголовий м'яз плеча", match: "Цільовий розгинач передпліччя" },
+  { term: "Великий сідничний", match: "Цільовий розгинач стегна" },
+  { term: "Чотириголовий стегна", match: "Цільовий розгинач коліна" },
+  { term: "Литковий м'яз", match: "Виконує плантарну флексію стопи" },
+  { term: "Підлопатковий м'яз", match: "Внутрішня ротація плеча" },
+  { term: "Підостьовий + малий круглий", match: "Зовнішня ротація плеча" },
+  { term: "Передній зубчастий", match: "Тягне лопатку вперед і вниз" },
+  { term: "Середній сідничний", match: "Цільовий при відведенні стегна" },
+  { term: "Привідні м'язи стегна", match: "Стабілізують кульшовий суглоб при ходьбі" },
+  { term: "Атлант (atlas)", match: "I шийний хребець без тіла й остистого відростка" },
+  { term: "Axis (осьовий)", match: "II шийний хребець із зубом для обертання атланта" },
+  { term: "Vertebra prominens", match: "VII шийний з найдовшим остистим відростком" },
+  { term: "Стегнова кістка (femur)", match: "Найбільша довга трубчаста кістка людини" },
+  { term: "Сагітальна площина", match: "Поділяє тіло на ліву і праву половини" },
+  { term: "Фронтальна вісь", match: "Згинання та розгинання у ліктьовому суглобі" },
+  { term: "Сагітальна вісь", match: "Відведення і приведення кінцівки" },
+  { term: "Вертикальна вісь", match: "Обертання голови або тулуба" },
+  { term: "Циркумдукція", match: "Круговий рух, кінцівка описує конус" },
+  { term: "Дорсифлексія", match: "Підняття стопи догори до гомілки" },
+  { term: "Пронація", match: "Поворот долоні вниз або всередину" },
+  { term: "Супінація", match: "Поворот долоні вгору або назовні" },
+  { term: "Мобільність", match: "Рух у функціональному діапазоні без компенсацій" },
+  { term: "Стабільність", match: "Зберігати контрольоване положення під впливом сил" },
+  { term: "Пропріоцепція", match: "Відчуття положення сегментів без зорового контролю" },
+  { term: "FMS", match: "Functional Movement Screen — скринінг руху" },
+  { term: "Joint-by-Joint Model", match: "Чергування мобільності та стабільності суглобів" },
+  { term: "Сангвінік", match: "Активний, рухливий, не любить кропіткої роботи" },
+  { term: "Холерик", match: "Інтенсивні емоційні рухи; інтерес швидко згасає" },
+  { term: "Флегматик", match: "Працелюбний, любить кропітке відпрацювання техніки" },
+  { term: "Меланхолік", match: "Тривожний, стан «стартової апатії»" },
+  { term: "Візуал", match: "Головне слово — «гарно», велика дистанція" },
+  { term: "Аудіал", match: "«Телефонна поза», слово «тихо»" },
+  { term: "Кінестет", match: "Близька дистанція, слово «зручно»" },
+  { term: "Дигітал", match: "Схрещені руки, слово «функціонально»" },
+];
+
+const MATCH_GAME_SIZE = 6;
+let matchState = null;
+
+function showMatch() {
+  $("topic-select").style.display = "none";
+  $("quiz-screen").classList.remove("active");
+  $("result-screen").classList.remove("active");
+  $("stats-screen").classList.remove("active");
+  $("achievements-screen").classList.remove("active");
+  $("glossary-screen").classList.remove("active");
+  $("anatomy-screen").classList.remove("active");
+  $("match-screen").classList.add("active");
+  startMatchGame();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hideMatch() {
+  $("match-screen").classList.remove("active");
+  $("topic-select").style.display = "block";
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function startMatchGame() {
+  const pool = shuffleArray(MATCH_PAIRS).slice(0, MATCH_GAME_SIZE);
+  // Each pair gets a unique id
+  const pairs = pool.map((p, i) => ({ id: i, term: p.term, match: p.match }));
+  const left = shuffleArray(pairs.map(p => ({ id: p.id, text: p.term, side: 'L' })));
+  const right = shuffleArray(pairs.map(p => ({ id: p.id, text: p.match, side: 'R' })));
+  matchState = {
+    pairs: pairs, left: left, right: right,
+    selectedL: null, selectedR: null,
+    matched: new Set(), attempts: 0, startTime: Date.now()
+  };
+  renderMatchGame();
+}
+function renderMatchGame() {
+  if (!matchState) return;
+  const m = matchState;
+  const total = m.pairs.length;
+  const found = m.matched.size;
+  const elapsed = Math.round((Date.now() - m.startTime) / 1000);
+  const acc = m.attempts > 0 ? Math.round(found / m.attempts * 100) : 100;
+  if (found === total) {
+    const win = `
+      <div class="match-win">
+        <div class="emj">&#x1F389;</div>
+        <div class="ttl">Усі знайдено!</div>
+        <div class="sub">Час: ${elapsed}c · Спроб: ${m.attempts} · Точність: ${acc}%</div>
+      </div>
+      <div class="match-actions">
+        <button class="btn-primary" onclick="startMatchGame()">&#x1F501; Нова гра</button>
+        <button class="btn-secondary" onclick="hideMatch()">До тем</button>
+      </div>`;
+    $("match-body").innerHTML = win;
+    // Перевірка досягнень — додамо в загальний пул через recordAnswer
+    return;
+  }
+  const stats = `
+    <div class="match-stats">
+      <div class="match-stat"><div class="lbl">Знайдено</div><div class="val good">${found}/${total}</div></div>
+      <div class="match-stat"><div class="lbl">Спроб</div><div class="val">${m.attempts}</div></div>
+      <div class="match-stat"><div class="lbl">Час</div><div class="val accent">${elapsed}c</div></div>
+    </div>`;
+  const renderItem = (item) => {
+    const isMatched = m.matched.has(item.id);
+    const isSelected = (item.side === 'L' && m.selectedL && m.selectedL.id === item.id) ||
+                       (item.side === 'R' && m.selectedR && m.selectedR.id === item.id);
+    const cls = 'match-item' + (isMatched ? ' matched' : '') + (isSelected ? ' selected' : '');
+    return `<button class="${cls}" onclick="matchClick('${item.side}', ${item.id})" ${isMatched ? 'disabled' : ''}>${item.text}</button>`;
+  };
+  const grid = `
+    <div class="match-grid">
+      <div class="match-col">
+        <div class="match-col-label">М'язи / Терміни</div>
+        ${m.left.map(renderItem).join('')}
+      </div>
+      <div class="match-col">
+        <div class="match-col-label">Функції / Опис</div>
+        ${m.right.map(renderItem).join('')}
+      </div>
+    </div>
+    <div class="match-actions">
+      <button class="btn-secondary" onclick="startMatchGame()">&#x1F501; Нова гра</button>
+    </div>`;
+  $("match-body").innerHTML = stats + grid;
+}
+function matchClick(side, id) {
+  if (!matchState || matchState.matched.has(id)) return;
+  const m = matchState;
+  if (side === 'L') m.selectedL = m.left.find(x => x.id === id);
+  else              m.selectedR = m.right.find(x => x.id === id);
+  if (m.selectedL && m.selectedR) {
+    m.attempts++;
+    if (m.selectedL.id === m.selectedR.id) {
+      // Match!
+      m.matched.add(m.selectedL.id);
+      m.selectedL = null; m.selectedR = null;
+      renderMatchGame();
+    } else {
+      // Wrong — shake animation
+      const lId = m.selectedL.id, rId = m.selectedR.id;
+      renderMatchGame();
+      setTimeout(() => {
+        document.querySelectorAll('.match-item').forEach(el => {
+          const onClick = el.getAttribute('onclick') || '';
+          if (onClick.indexOf("'L', " + lId) > -1 || onClick.indexOf("'R', " + rId) > -1) {
+            el.classList.add('shake');
+          }
+        });
+        setTimeout(() => {
+          if (matchState) { matchState.selectedL = null; matchState.selectedR = null; renderMatchGame(); }
+        }, 500);
+      }, 10);
+    }
+  } else {
+    renderMatchGame();
+  }
+}
+
+/* ============== CHALLENGE LINK ============== */
+function createChallenge() {
+  // 10 рандомних питань з усіх тем — кожне посилається на (topicId, qIdx)
+  const pool = [];
+  TOPICS.forEach(t => t.questions.forEach((q, i) => pool.push({ t: t.id, i: i })));
+  const sampled = shuffleArray(pool).slice(0, 10);
+  const data = { v: 1, q: sampled };
+  let encoded;
+  try { encoded = btoa(encodeURIComponent(JSON.stringify(data))); }
+  catch(e) { showToast('Не вдалося створити челендж'); return; }
+  const base = window.location.origin + window.location.pathname;
+  const url = base + '?c=' + encoded;
+  $("challenge-url").value = url;
+  $("challenge-overlay").classList.add('show');
+}
+function hideChallengeModal() {
+  $("challenge-overlay").classList.remove('show');
+}
+async function shareChallengeLink() {
+  const url = $("challenge-url").value;
+  const text = '🎯 Іспит-челендж від мене! Той самий набір з 10 питань. Пройди — порівняємо результати:';
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Iron Academy Challenge', text: text, url: url }); return; }
+    catch(e) { if (e.name === 'AbortError') return; }
+  }
+  try { await navigator.clipboard.writeText(url); showToast('Посилання скопійовано ✓'); }
+  catch(e) { $("challenge-url").select(); document.execCommand('copy'); showToast('Скопійовано'); }
+}
+function tryStartChallengeFromURL() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('c');
+    if (!code) return false;
+    const data = JSON.parse(decodeURIComponent(atob(code)));
+    if (!data || !data.q || !Array.isArray(data.q)) return false;
+    const questions = [];
+    const sources = [];
+    data.q.forEach(ref => {
+      const topic = TOPICS.find(t => t.id === ref.t);
+      if (topic && topic.questions[ref.i]) {
+        questions.push(topic.questions[ref.i]);
+        sources.push({ topicId: ref.t, qIdx: ref.i });
+      }
+    });
+    if (questions.length === 0) return false;
+    const challengeTopic = {
+      id: '_challenge',
+      icon: '&#x1F3AF;',
+      title: 'Челендж від друга',
+      questions: questions,
+      sources: sources,
+      isExam: false,
+      isChallenge: true
+    };
+    const indices = Array.from({ length: questions.length }, (_, i) => i);
+    state = { topic: challengeTopic, topicIdx: -1, qIdx: 0, score: 0, locked: false, order: indices, isExam: false, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: false, removedByHint: [] };
+    $("topic-select").style.display = "none";
+    $("welcome-overlay").classList.remove('show');
+    $("quiz-screen").classList.add("active");
+    $("quiz-title").textContent = challengeTopic.title;
+    $("q-total").textContent = questions.length;
+    renderQuestion();
+    // Очистити URL щоб після рестарту не повторилось
+    try { history.replaceState({}, '', window.location.pathname); } catch(e) {}
+    return true;
+  } catch(e) { return false; }
+}
+
+/* ============== ONBOARDING ============== */
+const ONBOARDING_STEPS = [
+  { selector: '.hero', title: '👋 Привіт!', text: 'Iron Academy — твоя міні-академія тренера. 11 тем, 144 питання, фінальний іспит. Зараз 30 секунд — і ти знатимеш як усе працює.' },
+  { selector: '#exam-block', title: '🏆 Фінальний іспит', text: '«Тренер чи ні?» — 25 рандомних питань з усіх тем. Прохідний поріг 50%. Складеш — отримаєш достенство «Тренер».' },
+  { selector: '.topic-card:first-of-type', title: '📚 Окремі теми', text: 'Натисни на тему — почнеш квіз. На кожній картці є тумблери «Перемішати» і «Таймер 30 сек», а також (коли з\'являться) кнопка «Робота над помилками».' },
+  { selector: '.top-actions .action-btn:nth-child(1)', title: '📊 Кабінет', text: 'Тут твоя статистика: точність, streak 🔥, heatmap днів активності, прогрес по кожній темі.' },
+  { selector: '.top-actions .action-btn:nth-child(2)', title: '🏅 Досягнення', text: '17 значків за різні досягнення: стрики, ідеальні іспити, комбо. Є й пасхалки 🦉🌅 — спробуй знайти.' },
+  { selector: '.top-actions .action-btn:nth-child(3)', title: '📖 Глосарій', text: 'Усі терміни з матеріалу одним списком: анатомія, біомеханіка, психологія. Пошук по букві або фразі.' },
+  { selector: '.top-actions .action-btn:nth-child(4)', title: '🧍 Анатомія', text: 'Інтерактивне тіло з м\'язами. Натисни — побачиш опис. Або обери тренувальний режим — треба знайти потрібний м\'яз.' },
+  { selector: null, title: '💪 Ну все, вперед!', text: 'Виявляй слабкі місця, бий рекорди, ділись результатами з друзями. Удачі!' }
+];
+
+let onbStep = 0;
+
+function startOnboarding() {
+  onbStep = 0;
+  $("onb-overlay").classList.add('show');
+  renderOnboardingStep();
+}
+
+function renderOnboardingStep() {
+  const step = ONBOARDING_STEPS[onbStep];
+  $("onb-step-num").textContent = (onbStep + 1) + '/' + ONBOARDING_STEPS.length;
+  $("onb-title").textContent = step.title;
+  $("onb-text").textContent = step.text;
+  $("onb-next").textContent = onbStep === ONBOARDING_STEPS.length - 1 ? 'Готово!' : 'Далі →';
+
+  const spotlight = $("onb-spotlight");
+  const tooltip = $("onb-tooltip");
+  if (!step.selector) {
+    spotlight.style.display = 'none';
+    tooltip.style.top = '50%';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    return;
+  }
+  spotlight.style.display = 'block';
+  const target = document.querySelector(step.selector);
+  if (!target) { onbStep++; if (onbStep < ONBOARDING_STEPS.length) renderOnboardingStep(); else skipOnboarding(); return; }
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => {
+    const rect = target.getBoundingClientRect();
+    const pad = 8;
+    spotlight.style.top  = (rect.top - pad) + 'px';
+    spotlight.style.left = (rect.left - pad) + 'px';
+    spotlight.style.width  = (rect.width + pad * 2) + 'px';
+    spotlight.style.height = (rect.height + pad * 2) + 'px';
+    // Tooltip позиціювання — знизу від ціль; якщо не вміщається — згори
+    const ttH = 220, vh = window.innerHeight, vw = window.innerWidth;
+    let top = rect.bottom + 16;
+    if (top + ttH > vh - 20) top = Math.max(20, rect.top - ttH - 16);
+    let left = Math.max(12, Math.min(vw - 332, rect.left + rect.width/2 - 160));
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+    tooltip.style.transform = 'none';
+  }, 350);
+}
+
+function nextOnboardingStep() {
+  onbStep++;
+  if (onbStep >= ONBOARDING_STEPS.length) { finishOnboarding(); }
+  else { renderOnboardingStep(); }
+}
+function skipOnboarding() { finishOnboarding(); }
+function onbOverlayClick(event) {
+  // Клік по затемненню (поза тултіпом) — пропустити тур
+  if (event.target.id === 'onb-overlay') skipOnboarding();
+}
+function finishOnboarding() {
+  $("onb-overlay").classList.remove('show');
+  try { localStorage.setItem('onboarded', '1'); } catch(e) {}
+}
+
+/* ============== WELCOME MODAL ============== */
+function showWelcomeModal() {
+  $("welcome-overlay").classList.add('show');
+}
+function hideWelcomeModal() {
+  $("welcome-overlay").classList.remove('show');
+}
+function acceptOnboarding() {
+  hideWelcomeModal();
+  setTimeout(startOnboarding, 300);
+}
+function declineOnboarding() {
+  hideWelcomeModal();
+  try { localStorage.setItem('onboarded', '1'); } catch(e) {}
+}
+function restartTour() {
+  // Викликається з кабінету або кнопок налаштувань
+  try { localStorage.removeItem('onboarded'); } catch(e) {}
+  // Якщо ми зараз у кабінеті — повертаємось на головну, потім тур
+  $("stats-screen").classList.remove("active");
+  $("achievements-screen").classList.remove("active");
+  $("glossary-screen").classList.remove("active");
+  $("anatomy-screen").classList.remove("active");
+  $("quiz-screen").classList.remove("active");
+  $("result-screen").classList.remove("active");
+  $("topic-select").style.display = "block";
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  setTimeout(startOnboarding, 300);
+}
+
 renderTopics();
+// Челендж посилання має пріоритет — якщо URL містить ?c=... запускаємо його
+const startedChallenge = tryStartChallengeFromURL();
+// Інакше — при першому візиті показуємо віконце з туром
+if (!startedChallenge) {
+  try {
+    if (!localStorage.getItem('onboarded')) {
+      setTimeout(showWelcomeModal, 600);
+    }
+  } catch(e) {}
+}
 </script>
 </body>
 </html>
