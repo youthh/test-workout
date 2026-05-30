@@ -169,6 +169,48 @@
     width: 0%; transition: width .35s ease;
     box-shadow: 0 0 8px var(--accent-glow);
   }
+  .q-tracker-wrap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px; margin-bottom: 14px;
+  }
+  .q-tracker {
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .q-cell {
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: inherit; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: transform .12s, background .15s;
+    background: #2a2a2a; color: #555;
+    border: 2px solid transparent;
+    flex-shrink: 0; padding: 0;
+  }
+  .q-cell:hover { transform: scale(1.12); }
+  .q-cell.correct { background: var(--good); color: #061a0d; }
+  .q-cell.wrong { background: var(--bad); color: #fff; }
+  .q-cell.current {
+    border-color: var(--orange); color: #fff; background: #2a2a2a;
+    box-shadow: 0 0 0 2px rgba(255,123,0,0.2);
+  }
+  .q-cell.current.correct { background: var(--good); color: #061a0d; }
+  .q-cell.current.wrong { background: var(--bad); color: #fff; }
+  .q-stats {
+    display: flex; gap: 14px; margin-top: 9px;
+    padding-top: 8px; border-top: 1px solid #1f1f1f;
+    font-size: 10.5px; color: var(--text-mute);
+    letter-spacing: 1.2px; text-transform: uppercase;
+    flex-wrap: wrap;
+  }
+  .q-stats b { font-weight: 800; margin-right: 3px; }
+  .q-stats .ok { color: var(--good); }
+  .q-stats .er { color: var(--bad); }
+  @media (max-width: 540px) {
+    .q-cell { width: 22px; height: 22px; font-size: 10px; }
+    .q-tracker { gap: 4px; }
+    .q-stats { font-size: 9.5px; gap: 10px; }
+  }
+
   .question-card {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: 14px; padding: 24px 22px;
@@ -330,7 +372,47 @@
     color: var(--text-dim); font-weight: 700;
   }
   footer .copyright-sub {
-    font-size: 10px; opacity: 0.8; margin-top: 2px;
+    font-size: 10px; opacity: 0.8; margin-top: 2px; margin-bottom: 14px;
+  }
+  .contact-block {
+    display: flex; gap: 8px; justify-content: center;
+    margin-top: 14px; flex-wrap: wrap;
+  }
+  .contact-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 22px;
+    background: rgba(35, 158, 217, 0.08);
+    border: 1px solid rgba(35, 158, 217, 0.35);
+    color: #54b8e8; text-decoration: none;
+    font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase;
+    font-weight: 700; transition: all .25s;
+  }
+  .contact-pill:hover {
+    background: rgba(35, 158, 217, 0.18);
+    border-color: #239ed9;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  .contact-pill .ico { font-size: 14px; }
+  .contact-pill.email {
+    background: rgba(255,123,0,0.08);
+    border-color: rgba(255,123,0,0.35);
+    color: var(--orange);
+  }
+  .contact-pill.email:hover {
+    background: rgba(255,123,0,0.18);
+    border-color: var(--orange);
+    color: #fff;
+  }
+  .contact-title {
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--text-mute); margin-top: 8px; margin-bottom: 6px;
+  }
+  .contact-note {
+    font-size: 10px; color: var(--text-mute);
+    margin-top: 10px; letter-spacing: 0.5px;
+    text-transform: none; font-weight: 400;
+    opacity: 0.7;
   }
   /* TOP ACTIONS */
   .top-actions {
@@ -1174,6 +1256,13 @@
   <footer>
     <div class="copyright-main">&copy; 2026 Iron Academy &middot; Valiavskiy Oleksiy</div>
     <div class="copyright-sub">Created with <span class="heart">&#x2764;</span> &amp; AI</div>
+    <div class="contact-title">&mdash; Зв'язатися зі мною &mdash;</div>
+    <div class="contact-block">
+      <a class="contact-pill" href="https://t.me/emotionyx" target="_blank" rel="noopener">
+        <span class="ico">&#x2708;&#xFE0F;</span><span>Мій Telegram &middot; @emotionyx</span>
+      </a>
+    </div>
+    <div class="contact-note">Питання, побажання, баги — пиши мені напряму &#x1F4AC;</div>
   </footer>
 </div>
 
@@ -1628,6 +1717,13 @@ function forceTimeoutAnswer() {
   const src = getSourceFor(t, realIdx);
   addMistake(src.topicId, src.qIdx);
   recordAnswer(src.topicId, false);
+  // Save to tracker history (timeout = wrong)
+  if (!state.answeredHistory) state.answeredHistory = [];
+  state.answeredHistory[state.qIdx] = {
+    picked: -1, optionOrder: state.optionOrder.slice(), correct: false, timeout: true
+  };
+  const trk = document.querySelector('.q-tracker-wrap');
+  if (trk) trk.outerHTML = renderTracker();
   const correctDisplayIdx = state.optionOrder.indexOf(correct);
   const exp = $("explanation");
   exp.innerHTML = '<span class="verdict bad">⏱ Час вийшов</span><b>Правильна відповідь: ' + ["А","Б","В","Г"][correctDisplayIdx] + '.</b> ' + q.e + reportButtonHTML(q);
@@ -2410,7 +2506,7 @@ function startQuiz(idx) {
   const total = t.questions.length;
   const indices = Array.from({ length: total }, (_, i) => i);
   const order = shuffleByTopic[t.id] ? shuffleArray(indices) : indices;
-  state = { topic: t, topicIdx: idx, qIdx: 0, score: 0, locked: false, order: order, isExam: false, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: !!timerByTopic[t.id], removedByHint: [] };
+  state = { topic: t, topicIdx: idx, qIdx: 0, score: 0, locked: false, order: order, isExam: false, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: !!timerByTopic[t.id], removedByHint: [], answeredHistory: [] };
   $("topic-select").style.display = "none";
   $("result-screen").classList.remove("active");
   $("quiz-screen").classList.add("active");
@@ -2434,7 +2530,7 @@ function startExam() {
     isExam: true
   };
   const indices = Array.from({ length: examTopic.questions.length }, (_, i) => i);
-  state = { topic: examTopic, topicIdx: -1, qIdx: 0, score: 0, locked: false, order: indices, isExam: true, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: !!timerByTopic['_exam'], removedByHint: [] };
+  state = { topic: examTopic, topicIdx: -1, qIdx: 0, score: 0, locked: false, order: indices, isExam: true, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: !!timerByTopic['_exam'], removedByHint: [], answeredHistory: [] };
   $("topic-select").style.display = "none";
   $("result-screen").classList.remove("active");
   $("quiz-screen").classList.add("active");
@@ -2460,7 +2556,7 @@ function startMistakes(event, topicIdx) {
     isMistakes: true
   };
   const indices = Array.from({ length: questions.length }, (_, i) => i);
-  state = { topic: mistakeTopic, topicIdx: topicIdx, qIdx: 0, score: 0, locked: false, order: shuffleArray(indices), isExam: false, isMistakes: true, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: false, removedByHint: [] };
+  state = { topic: mistakeTopic, topicIdx: topicIdx, qIdx: 0, score: 0, locked: false, order: shuffleArray(indices), isExam: false, isMistakes: true, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: false, removedByHint: [], answeredHistory: [] };
   $("topic-select").style.display = "none";
   $("result-screen").classList.remove("active");
   $("quiz-screen").classList.add("active");
@@ -2476,32 +2572,77 @@ function getSourceFor(topic, realIdx) {
   return { topicId: topic.id, qIdx: realIdx };
 }
 
+function renderTracker() {
+  const t = state.topic;
+  if (!t) return '';
+  const total = t.questions.length;
+  const hist = state.answeredHistory || [];
+  let okN = 0, badN = 0;
+  let cells = '';
+  for (let i = 0; i < total; i++) {
+    let cls = 'q-cell';
+    if (i === state.qIdx) cls += ' current';
+    const h = hist[i];
+    if (h) {
+      if (h.correct) { cls += ' correct'; okN++; }
+      else { cls += ' wrong'; badN++; }
+    }
+    cells += `<button class="${cls}" onclick="jumpToQ(${i})" title="Питання ${i+1}">${i+1}</button>`;
+  }
+  const leftN = total - okN - badN;
+  return `
+    <div class="q-tracker-wrap">
+      <div class="q-tracker">${cells}</div>
+      <div class="q-stats">
+        <span><b class="ok">${okN}</b>правильно</span>
+        <span><b class="er">${badN}</b>помилок</span>
+        <span><b>${leftN}</b>залишилось</span>
+      </div>
+    </div>`;
+}
+
+function jumpToQ(idx) {
+  if (!state.topic) return;
+  if (idx === state.qIdx) return;
+  if (idx < 0 || idx >= state.topic.questions.length) return;
+  stopTimer();
+  state.qIdx = idx;
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function renderQuestion() {
   stopTimer();
   const t = state.topic;
   const realIdx = state.order[state.qIdx];
   const q = t.questions[realIdx];
   $("q-current").textContent = state.qIdx + 1;
-  $("progress-bar").style.width = (state.qIdx / t.questions.length * 100) + "%";
+  const hist = state.answeredHistory || [];
+  const saved = hist[state.qIdx];
+  $("progress-bar").style.width = ((state.qIdx + (saved ? 1 : 0)) / t.questions.length * 100) + "%";
   const letters = ["А", "Б", "В", "Г"];
-  const optionOrder = shuffleArray([0, 1, 2, 3]);
+  const optionOrder = saved ? saved.optionOrder.slice() : shuffleArray([0, 1, 2, 3]);
   state.optionOrder = optionOrder;
   state.removedByHint = [];
 
-  const timerHTML = state.timerOn ? `
+  const timerHTML = (state.timerOn && !saved) ? `
     <div class="timer-row">
       <div class="timer-track"><div class="timer-fill" id="timer-bar"></div></div>
       <div class="timer-text"><span id="timer-text">${QUESTION_TIME}</span>с</div>
     </div>` : '';
 
-  const hintHTML = `
+  const hintHTML = !saved ? `
     <button class="hint-btn ${state.hintsLeft <= 0 ? 'used' : ''}" id="hint-btn" onclick="useHint()">
       <span>&#x1F3B2; Підказка 50/50</span>
       <span class="hint-pill">Залишилось: <span id="hint-count">${state.hintsLeft}</span></span>
-    </button>`;
+    </button>` : '';
+
+  const isLast = state.qIdx + 1 >= t.questions.length;
+  const nextLabel = isLast ? "Подивитись результат" : "Наступне питання &rarr;";
 
   $("quiz-body").innerHTML = `
     <div class="combo-indicator" id="combo-indicator"></div>
+    ${renderTracker()}
     <div class="question-card">
       ${timerHTML}
       <div class="question">${q.q}</div>
@@ -2515,14 +2656,41 @@ function renderQuestion() {
         `).join("")}
       </div>
       <div class="explanation" id="explanation"></div>
-      <button class="next-btn" id="next-btn" onclick="nextQuestion()">
-        ${state.qIdx + 1 < t.questions.length ? "Наступне питання &rarr;" : "Подивитись результат"}
-      </button>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">${nextLabel}</button>
     </div>
   `;
-  state.locked = false;
-  updateComboDisplay();
-  startTimer();
+
+  if (saved) {
+    // Заблоковане питання (відповідав раніше) — показати результат і пояснення
+    state.locked = true;
+    showLockedAnswer(saved);
+  } else {
+    state.locked = false;
+    updateComboDisplay();
+    startTimer();
+  }
+}
+
+function showLockedAnswer(saved) {
+  const t = state.topic;
+  const realIdx = state.order[state.qIdx];
+  const q = t.questions[realIdx];
+  const correct = q.c;
+  document.querySelectorAll(".option").forEach((b) => {
+    b.disabled = true;
+    const orig = +b.dataset.orig;
+    if (orig === correct) b.classList.add("correct");
+    if (orig === saved.picked && !saved.correct) b.classList.add("wrong");
+  });
+  const correctDisplayIdx = state.optionOrder.indexOf(correct);
+  const exp = $("explanation");
+  exp.innerHTML = `
+    <span class="verdict ${saved.correct ? 'good' : 'bad'}">${saved.correct ? '&#x2713; Вірно' : '&#x2717; Не вірно'}</span>
+    <b>Правильна відповідь: ${["А","Б","В","Г"][correctDisplayIdx]}.</b> ${q.e}
+    ${reportButtonHTML(q)}
+  `;
+  exp.classList.add("show");
+  $("next-btn").classList.add("show");
 }
 
 function answer(origIdx) {
@@ -2553,6 +2721,17 @@ function answer(origIdx) {
     addMistake(src.topicId, src.qIdx);
   }
   recordAnswer(src.topicId, isCorrect);
+
+  // Зберегти в історію відповідей для трекера
+  if (!state.answeredHistory) state.answeredHistory = [];
+  state.answeredHistory[state.qIdx] = {
+    picked: origIdx,
+    optionOrder: state.optionOrder.slice(),
+    correct: isCorrect
+  };
+  // Перерендерити трекер, щоб клітинка змінила колір
+  const trk = document.querySelector('.q-tracker-wrap');
+  if (trk) trk.outerHTML = renderTracker();
 
   document.querySelectorAll(".option").forEach((b) => {
     b.disabled = true;
@@ -3041,7 +3220,7 @@ function tryStartChallengeFromURL() {
       isChallenge: true
     };
     const indices = Array.from({ length: questions.length }, (_, i) => i);
-    state = { topic: challengeTopic, topicIdx: -1, qIdx: 0, score: 0, locked: false, order: indices, isExam: false, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: false, removedByHint: [] };
+    state = { topic: challengeTopic, topicIdx: -1, qIdx: 0, score: 0, locked: false, order: indices, isExam: false, isMistakes: false, combo: 0, maxCombo: 0, hintsLeft: INITIAL_HINTS, timerOn: false, removedByHint: [], answeredHistory: [] };
     $("topic-select").style.display = "none";
     $("welcome-overlay").classList.remove('show');
     $("quiz-screen").classList.add("active");
@@ -3056,14 +3235,17 @@ function tryStartChallengeFromURL() {
 
 /* ============== ONBOARDING ============== */
 const ONBOARDING_STEPS = [
-  { selector: '.hero', title: '👋 Привіт!', text: 'Iron Academy — твоя міні-академія тренера. 11 тем, 144 питання, фінальний іспит. Зараз 30 секунд — і ти знатимеш як усе працює.' },
-  { selector: '#exam-block', title: '🏆 Фінальний іспит', text: '«Тренер чи ні?» — 25 рандомних питань з усіх тем. Прохідний поріг 50%. Складеш — отримаєш достенство «Тренер».' },
-  { selector: '.topic-card:first-of-type', title: '📚 Окремі теми', text: 'Натисни на тему — почнеш квіз. На кожній картці є тумблери «Перемішати» і «Таймер 30 сек», а також (коли з\'являться) кнопка «Робота над помилками».' },
-  { selector: '.top-actions .action-btn:nth-child(1)', title: '📊 Кабінет', text: 'Тут твоя статистика: точність, streak 🔥, heatmap днів активності, прогрес по кожній темі.' },
-  { selector: '.top-actions .action-btn:nth-child(2)', title: '🏅 Досягнення', text: '17 значків за різні досягнення: стрики, ідеальні іспити, комбо. Є й пасхалки 🦉🌅 — спробуй знайти.' },
-  { selector: '.top-actions .action-btn:nth-child(3)', title: '📖 Глосарій', text: 'Усі терміни з матеріалу одним списком: анатомія, біомеханіка, психологія. Пошук по букві або фразі.' },
-  { selector: '.top-actions .action-btn:nth-child(4)', title: '🧍 Анатомія', text: 'Інтерактивне тіло з м\'язами. Натисни — побачиш опис. Або обери тренувальний режим — треба знайти потрібний м\'яз.' },
-  { selector: null, title: '💪 Ну все, вперед!', text: 'Виявляй слабкі місця, бий рекорди, ділись результатами з друзями. Удачі!' }
+  { selector: '.hero', title: '👋 Привіт!', text: 'Iron Academy — твоя міні-академія тренера. 11 тем, 144 питання, фінальний іспит. Зараз ~30 секунд — і ти знатимеш як усе працює.' },
+  { selector: '#exam-block', title: '🏆 Фінальний іспит', text: '«Тренер чи ні?» — 25 рандомних питань з усіх тем. Прохідний поріг 50%. Складеш — отримаєш статус «Тренер».' },
+  { selector: '.topic-card:first-of-type', title: '📚 Окремі теми', text: 'Натисни на тему — стартуєш квіз. На кожній картці тумблери «🔀 Перемішати» і «⏱ Таймер 30 сек». Коли з\'являться помилки — вийде кнопка «🎯 Робота над помилками».' },
+  { selector: null, title: '📊 Під час квізу', text: 'Зверху над питанням буде трекер: 🟢 правильні · 🔴 помилки · 🟠 поточне · ⚪ ще не пройдено. Клікаєш на будь-яку клітинку — стрибаєш на питання. Плюс комбо 🔥, підказки 50/50, кнопка «🚩 знайшов помилку».' },
+  { selector: '.top-actions .action-btn:nth-child(1)', title: '📊 Кабінет', text: 'Твоя статистика: точність, streak 🔥, heatmap днів активності, прогрес по кожній темі.' },
+  { selector: '.top-actions .action-btn:nth-child(2)', title: '🏅 Досягнення', text: '17 значків за різне: стрики, ідеальні іспити, комбо. Є й пасхалки 🦉🌅 — спробуй знайти.' },
+  { selector: '.top-actions .action-btn:nth-child(3)', title: '📖 Глосарій', text: '128 термінів з матеріалу одним списком: анатомія, біомех, психологія. Пошук по букві або фразі.' },
+  { selector: '.top-actions .action-btn:nth-child(4)', title: '🧍 Анатомія', text: 'Інтерактивне тіло з 27 м\'язами. Натисни — побачиш опис. Або «Тренувальний режим» — треба знайти потрібний м\'яз.' },
+  { selector: '.top-actions .action-btn:nth-child(5)', title: '🧩 Match-гра', text: 'Сполучай м\'язи з функціями. 6 пар на партію, 38 у пулі. На швидкість і точність — є таймер.' },
+  { selector: '.top-actions .action-btn:nth-child(6)', title: '🎯 Челендж другу', text: 'Кидаєш кнопку — апа дає посилання. Друг переходить → проходить ТІ САМІ 10 питань → порівняти результати. Без бекенду, працює офлайн.' },
+  { selector: null, title: '💪 Ну все, вперед!', text: 'Виявляй слабкі місця, бий рекорди, ділись результатами з друзями. Удачі — і не зриви свій streak 🔥' }
 ];
 
 let onbStep = 0;
