@@ -13,9 +13,18 @@ interface SimQuestion {
   chosen: number | null;
 }
 
+export interface SavedSimulator {
+  questions: SimQuestion[];
+  currentIdx: number;
+  questionCount: number;
+  timerEnabled: boolean;
+}
+
 interface ExamSimulatorScreenProps {
   onBack: () => void;
   onToast: (msg: string) => void;
+  savedState?: SavedSimulator;
+  onSaveState: (s: SavedSimulator) => void;
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -40,18 +49,25 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-export default function ExamSimulatorScreen({ onBack, onToast }: ExamSimulatorScreenProps) {
-  const [phase, setPhase] = useState<Phase>('setup');
+export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSaveState }: ExamSimulatorScreenProps) {
+  const [exitModal, setExitModal] = useState(false);
+  const [phase, setPhase] = useState<Phase>(savedState ? 'exam' : 'setup');
   const [selectedTopic, setSelectedTopic] = useState<string>('all');
-  const [questionCount, setQuestionCount] = useState<number>(25);
-  const [timerEnabled, setTimerEnabled] = useState(true);
-  const [questions, setQuestions] = useState<SimQuestion[]>([]);
-  const [currentIdx, setCurrentIdx] = useState(0);
+  const [questionCount, setQuestionCount] = useState<number>(savedState?.questionCount ?? 25);
+  const [timerEnabled, setTimerEnabled] = useState(savedState?.timerEnabled ?? true);
+  const [questions, setQuestions] = useState<SimQuestion[]>(savedState?.questions ?? []);
+  const [currentIdx, setCurrentIdx] = useState(savedState?.currentIdx ?? 0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [startTime, setStartTime] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showReview, setShowReview] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  function handleExit() {
+    onSaveState({ questions, currentIdx, questionCount, timerEnabled });
+    setExitModal(false);
+    onBack();
+  }
 
   const finishExam = useCallback((qs: SimQuestion[], elapsed: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -225,11 +241,22 @@ export default function ExamSimulatorScreen({ onBack, onToast }: ExamSimulatorSc
 
     return (
       <div className="quiz-screen active">
+        {exitModal && (
+          <div className="exit-overlay" onClick={() => setExitModal(false)}>
+            <div className="exit-box" onClick={e => e.stopPropagation()}>
+              <div className="exit-box-icon">⚠️</div>
+              <div className="exit-box-title">Вийти з іспиту?</div>
+              <div className="exit-box-desc">Прогрес буде збережено — зможеш продовжити пізніше</div>
+              <div className="exit-box-btns">
+                <button className="exit-stay" onClick={() => setExitModal(false)}>Залишитись</button>
+                <button className="exit-leave" onClick={handleExit}>Вийти</button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="container">
           <div className="quiz-header">
-            <button className="back-btn" onClick={() => {
-              if (confirm('Вийти з іспиту? Прогрес буде втрачено.')) onBack();
-            }}>✕ Вийти</button>
+            <button className="back-btn" onClick={() => setExitModal(true)}>✕ Вийти</button>
             <div className="quiz-title">Симулятор іспиту</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {timerEnabled && (

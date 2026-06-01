@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import type { QuizState, AnswerRecord } from '../types';
 
 const QUESTION_TIME = 30;
@@ -24,6 +24,7 @@ export default function QuizScreen({
   const barRef = useRef<HTMLDivElement>(null);
   const txtRef = useRef<HTMLSpanElement>(null);
 
+  const [exitModal, setExitModal] = useState(false);
   const { topic, qIdx, order, locked, hintsLeft, removedByHint, answeredHistory, timerOn } = state;
 
   const stopTimer = useCallback(() => {
@@ -116,9 +117,24 @@ export default function QuizScreen({
 
   return (
     <div className="quiz-screen active">
+      {exitModal && (
+        <div className="exit-overlay" onClick={() => setExitModal(false)}>
+          <div className="exit-box" onClick={e => e.stopPropagation()}>
+            <div className="exit-box-icon">⚠️</div>
+            <div className="exit-box-title">Вийти з тесту?</div>
+            <div className="exit-box-desc">Прогрес буде збережено — зможеш продовжити пізніше</div>
+            <div className="exit-box-btns">
+              <button className="exit-stay" onClick={() => setExitModal(false)}>Залишитись</button>
+              <button className="exit-leave" onClick={onBack}>Вийти</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="container">
         <div className="quiz-header">
-          <button className="back-btn" onClick={onBack}>← Назад</button>
+          <button className="back-btn" onClick={() => qIdx > 0 ? onJump(qIdx - 1) : setExitModal(true)}>
+            ← Назад
+          </button>
           <div className="quiz-title">{topic.title}</div>
           <div className="quiz-counter">
             <b id="q-current">{qIdx + 1}</b>
