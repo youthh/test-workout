@@ -23,8 +23,8 @@ export default function QuizScreen({
   const timerStartRef = useRef<number>(0);
   const barRef = useRef<HTMLDivElement>(null);
   const txtRef = useRef<HTMLSpanElement>(null);
-  const [confirmExit, setConfirmExit] = useState(false);
 
+  const [exitModal, setExitModal] = useState(false);
   const { topic, qIdx, order, locked, hintsLeft, removedByHint, answeredHistory, timerOn } = state;
 
   const stopTimer = useCallback(() => {
@@ -117,28 +117,24 @@ export default function QuizScreen({
 
   return (
     <div className="quiz-screen active">
-      {confirmExit && (
-        <div className="exit-overlay">
-          <div className="exit-box">
+      {exitModal && (
+        <div className="exit-overlay" onClick={() => setExitModal(false)}>
+          <div className="exit-box" onClick={e => e.stopPropagation()}>
             <div className="exit-box-icon">⚠️</div>
             <div className="exit-box-title">Вийти з тесту?</div>
-            <div className="exit-box-desc">
-              Відповіді не збережуться.<br />Прогрес буде загублено.
-            </div>
+            <div className="exit-box-desc">Прогрес буде збережено — зможеш продовжити пізніше</div>
             <div className="exit-box-btns">
-              <button className="exit-stay" onClick={() => setConfirmExit(false)}>
-                Залишитись
-              </button>
-              <button className="exit-leave" onClick={onBack}>
-                Вийти
-              </button>
+              <button className="exit-stay" onClick={() => setExitModal(false)}>Залишитись</button>
+              <button className="exit-leave" onClick={onBack}>Вийти</button>
             </div>
           </div>
         </div>
       )}
       <div className="container">
         <div className="quiz-header">
-          <button className="back-btn" onClick={() => setConfirmExit(true)}>← Назад</button>
+          <button className="back-btn" onClick={() => qIdx > 0 ? onJump(qIdx - 1) : setExitModal(true)}>
+            ← Назад
+          </button>
           <div className="quiz-title">{topic.title}</div>
           <div className="quiz-counter">
             <b id="q-current">{qIdx + 1}</b>
