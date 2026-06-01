@@ -519,6 +519,14 @@ export default function Home() {
       {screen === 'flashcards' && (
         <FlashcardsScreen onBack={handleBack} />
       )}
+
+      {screen === 'srs' && (
+        <SRSScreen onBack={handleBack} />
+      )}
+
+      {screen === 'simulator' && (
+        <ExamSimulatorScreen onBack={handleBack} onToast={showToast} />
+      )}
     </>
   );
 }
