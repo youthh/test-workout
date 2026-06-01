@@ -5,71 +5,102 @@ description: Runs a QA agent to test the Iron Academy Next.js app after changes 
 
 # QA Check — Iron Academy
 
-You are running quality assurance on the Iron Academy Next.js app after changes to the `develop` branch.
+You are running quality assurance on the Iron Academy Next.js app using the **live Vercel preview** of the `develop` branch.
+
+```
+DEV_URL=https://test-workout-git-develop-youthhs-projects.vercel.app
+PROD_URL=https://test-workout.vercel.app
+```
 
 ## Steps
 
-### 1. Start the dev server
+### 1. Wait for develop deployment to be ready
+
+After a push to develop, Vercel needs ~30-60 seconds to build.
+
 ```bash
-PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx next dev /Users/emotion/Desktop/iron-academy --port 3002 2>&1 &
-sleep 5
-curl -s -o /dev/null -w "%{http_code}" http://localhost:3002
+for i in $(seq 1 10); do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" https://test-workout-git-develop-youthhs-projects.vercel.app)
+  echo "attempt $i: $CODE"
+  [ "$CODE" = "200" ] && break
+  sleep 15
+done
 ```
 
-If the server doesn't return 200 — report the error and stop.
-
-### 2. Check what changed recently
+If still not 200 after 10 attempts — check Vercel logs:
 ```bash
-git -C /Users/emotion/Desktop/iron-academy log --oneline -5
-git -C /Users/emotion/Desktop/iron-academy diff origin/main...develop --stat
+PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" vercel ls test-workout 2>&1 | head -10
+```
+Report the error and stop.
+
+### 2. Check what changed vs production
+
+```bash
+git -C /Users/emotion/Desktop/iron-academy log origin/main..origin/develop --oneline
+git -C /Users/emotion/Desktop/iron-academy diff origin/main...origin/develop --stat
 ```
 
-Use this to understand what features were added and focus testing on those areas.
+Use this to understand what features were added — focus testing on those areas.
 
-### 3. Run automated checks
+### 3. Run TypeScript check locally
 
-**TypeScript types:**
 ```bash
 PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx tsc --noEmit -p /Users/emotion/Desktop/iron-academy/tsconfig.json 2>&1
 ```
 
-**Check all pages load:**
+Zero errors = ✅. Any errors = fix before releasing.
+
+### 4. Automated smoke tests on dev URL
+
 ```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:3002
+DEV=https://test-workout-git-develop-youthhs-projects.vercel.app
+
+# Homepage returns 200
+curl -s -o /dev/null -w "homepage: %{http_code}\n" $DEV
+
+# HTML contains expected content
+curl -s $DEV | grep -c "Iron Academy" && echo "✅ title found" || echo "❌ title missing"
+curl -s $DEV | grep -c "Тренажер\|Анатомія\|Глосарій" && echo "✅ sections found" || echo "❌ sections missing"
+
+# No obvious JS errors in HTML
+curl -s $DEV | grep -i "application error\|unhandled\|500" | head -3
 ```
 
-**Check no console errors in HTML:**
-```bash
-curl -s http://localhost:3002 | grep -i "error\|undefined\|null" | head -5
-```
+### 5. Manual test checklist
 
-### 4. Manual test checklist
+Open https://test-workout-git-develop-youthhs-projects.vercel.app and test:
 
-Test these flows on http://localhost:3002:
-
+**Core flows:**
 - [ ] Головна сторінка відкривається, всі 12 тем видно
 - [ ] Натиснути на тему → quiz запускається
-- [ ] Відповісти на питання → показує правильну/неправильну відповідь
-- [ ] Кнопка "Наступне" → переходить до наступного питання
+- [ ] Відповісти на питання (клавіші A/B/C/D теж працюють) → показує правильну/неправильну відповідь
+- [ ] Enter/пробіл → переходить до наступного питання
 - [ ] Завершити тест → екран результатів
 - [ ] "До тем" → повертає на головну
-- [ ] Нові фічі (з останніх комітів) — перевір їх окремо
+
+**New features (from step 2 diff):**
+- [ ] Перевір кожну нову фічу окремо
 
 Report each item as ✅ або ❌.
 
-### 5. Stop the server
+### 6. Compare dev vs prod (regression check)
+
 ```bash
-pkill -f "next dev.*3002" 2>/dev/null
-echo "server stopped"
+PROD_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://test-workout.vercel.app)
+DEV_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://test-workout-git-develop-youthhs-projects.vercel.app)
+echo "prod: $PROD_CODE | dev: $DEV_CODE"
 ```
 
-### 6. Report results
+Both should be 200.
+
+### 7. Report results
 
 **If all checks pass:**
 - Підсумуй що перевірив і все пройшло
-- Скажи: "✅ QA пройшов! Запусти `/release` щоб злити в main."
+- Скажи: "✅ QA пройшов на dev URL! Запусти `/release` щоб злити в main і задеплоїти на прод."
 
 **If something fails:**
 - Чітко опиши що саме не працює
 - Вкажи в якому компоненті або файлі проблема
 - Скажи що треба пофіксити перед релізом
+- НЕ дозволяй релізити поки є помилки
