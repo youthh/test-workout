@@ -96,6 +96,7 @@ export default function Home() {
   const [achievementToast, setAchievementToast] = useState<Achievement | null>(null);
   const [achievementQueue, setAchievementQueue] = useState<Achievement[]>([]);
   const [streak, setStreak] = useState(0);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
     setShuffleByTopic(loadJSON('shuffleByTopic', {}));
@@ -105,7 +106,17 @@ export default function Home() {
     setHistory(loadJSON('history', {}));
     setAchievements(loadJSON('achievements', []));
     setStreak(loadJSON('streak', 0));
+    const saved = (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
+    setTheme(saved);
+    document.documentElement.setAttribute('data-theme', saved);
   }, []);
+
+  function toggleTheme() {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    localStorage.setItem('theme', next);
+    document.documentElement.setAttribute('data-theme', next);
+  }
 
   useEffect(() => {
     if (achievementQueue.length > 0 && !achievementToast) {
@@ -253,6 +264,14 @@ export default function Home() {
     if (!topic) return;
     const nextIdx = qIdx + 1;
     if (nextIdx >= topic.questions.length) {
+      const unanswered = quizState.answeredHistory.filter(h => h === null).length;
+      if (unanswered > 0) {
+        const firstIdx = quizState.answeredHistory.findIndex(h => h === null);
+        showToast(`Залишилось ${unanswered} ${unanswered === 1 ? 'питання' : 'питань'} без відповіді`);
+        setQuizState({ ...quizState, qIdx: firstIdx, locked: false, removedByHint: [] });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
       const pct = Math.round(quizState.score / topic.questions.length * 100);
 
       // Update stats on completion
@@ -379,6 +398,9 @@ export default function Home() {
       {screen === 'home' && (
         <div className="container">
           <div className="hero">
+            <button className="theme-toggle" onClick={toggleTheme} title="Змінити тему">
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <div className="brand-icon">
               <span style={{ fontFamily: 'Impact, sans-serif', fontSize: 22, color: '#fff', letterSpacing: 1 }}>IA</span>
             </div>
