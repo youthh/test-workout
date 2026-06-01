@@ -1,0 +1,7 @@
+{
+  "skills": [
+    ".claude/skills/push-feature",
+    ".claude/skills/qa-check",
+    ".claude/skills/release"
+  ]
+}

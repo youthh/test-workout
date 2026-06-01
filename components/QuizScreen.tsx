@@ -58,6 +58,21 @@ export default function QuizScreen({
     return () => stopTimer();
   }, [qIdx, timerOn, locked, stopTimer, onTimeout, answeredHistory]);
 
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const map: Record<string, number> = { a: 0, b: 1, c: 2, d: 3 };
+      const key = e.key.toLowerCase();
+      if (key in map && !locked) {
+        const idx = map[key];
+        if (!removedByHint.includes(idx)) handleAnswer(idx);
+      }
+      if ((key === 'enter' || key === ' ') && locked) onNext();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [locked, removedByHint, qIdx]);
+
   if (!topic) return null;
 
   const realIdx = order[qIdx];
@@ -176,6 +191,12 @@ export default function QuizScreen({
               </button>
             ))}
           </div>
+
+          {!saved && (
+            <div style={{ marginTop: 10, fontSize: 11, color: 'var(--text-mute)', letterSpacing: 1, textAlign: 'right' }}>
+              клавіші A · B · C · D · Enter
+            </div>
+          )}
 
           {saved && (
             <div className="explanation show">
