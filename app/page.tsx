@@ -18,7 +18,7 @@ import ComboIndicator from '../components/ComboIndicator';
 import AchievementToast from '../components/AchievementToast';
 import WelcomeModal from '../components/WelcomeModal';
 import SRSScreen from '../components/SRSScreen';
-import ExamSimulatorScreen from '../components/ExamSimulatorScreen';
+import ExamSimulatorScreen, { type SavedSimulator } from '../components/ExamSimulatorScreen';
 import type { Achievement } from '../data/achievements';
 
 const INITIAL_HINTS = 3;
@@ -98,6 +98,7 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [savedQuiz, setSavedQuiz] = useState<QuizState | null>(null);
+  const [savedSimulator, setSavedSimulator] = useState<SavedSimulator | null>(null);
 
   useEffect(() => {
     setShuffleByTopic(loadJSON('shuffleByTopic', {}));
@@ -111,6 +112,7 @@ export default function Home() {
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
     setSavedQuiz(loadJSON('savedQuiz', null));
+    setSavedSimulator(loadJSON('savedSimulator', null));
   }, []);
 
   function toggleTheme() {
@@ -377,7 +379,32 @@ export default function Home() {
     setQuizState(saved);
     setScreen('quiz');
     saveJSON('savedQuiz', null);
+    setSavedQuiz(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function discardQuiz() {
+    saveJSON('savedQuiz', null);
+    setSavedQuiz(null);
+  }
+
+  function resumeSimulator() {
+    const saved = loadJSON<SavedSimulator | null>('savedSimulator', null);
+    if (!saved) return;
+    setSavedSimulator(saved);
+    setScreen('simulator');
+    saveJSON('savedSimulator', null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function discardSimulator() {
+    saveJSON('savedSimulator', null);
+    setSavedSimulator(null);
+  }
+
+  function handleSaveSimulator(s: SavedSimulator) {
+    saveJSON('savedSimulator', s);
+    setSavedSimulator(s);
   }
 
   function handleRetry() {
@@ -426,13 +453,32 @@ export default function Home() {
           </div>
 
           {savedQuiz && savedQuiz.topic && (
-            <div className="resume-banner" onClick={resumeQuiz}>
+            <div className="resume-banner">
               <div className="resume-info">
                 <span className="resume-label">Незавершений тест</span>
                 <span className="resume-title">{savedQuiz.topic.icon} {savedQuiz.topic.title}</span>
                 <span className="resume-sub">Питання {savedQuiz.qIdx + 1} з {savedQuiz.topic.questions.length}</span>
               </div>
-              <span className="resume-cta">Продовжити →</span>
+              <div className="resume-actions">
+                <button className="resume-discard" onClick={discardQuiz}>Завершити</button>
+                <button className="resume-cta-btn" onClick={resumeQuiz}>Продовжити →</button>
+              </div>
+            </div>
+          )}
+
+          {savedSimulator && (
+            <div className="resume-banner">
+              <div className="resume-info">
+                <span className="resume-label">Незавершений іспит</span>
+                <span className="resume-title">📝 Симулятор іспиту</span>
+                <span className="resume-sub">
+                  Питання {savedSimulator.currentIdx + 1} з {savedSimulator.questions.length} · відповіді: {savedSimulator.questions.filter(q => q.chosen !== null).length}
+                </span>
+              </div>
+              <div className="resume-actions">
+                <button className="resume-discard" onClick={discardSimulator}>Завершити</button>
+                <button className="resume-cta-btn" onClick={resumeSimulator}>Продовжити →</button>
+              </div>
             </div>
           )}
 
@@ -574,7 +620,12 @@ export default function Home() {
       )}
 
       {screen === 'simulator' && (
-        <ExamSimulatorScreen onBack={handleBack} onToast={showToast} />
+        <ExamSimulatorScreen
+          onBack={handleBack}
+          onToast={showToast}
+          savedState={savedSimulator ?? undefined}
+          onSaveState={handleSaveSimulator}
+        />
       )}
     </>
   );
