@@ -2,6 +2,9 @@
   "skills": [
     ".claude/skills/push-feature",
     ".claude/skills/qa-check",
-    ".claude/skills/release"
+    ".claude/skills/release",
+    ".claude/skills/lighthouse",
+    ".claude/skills/hotfix",
+    ".claude/skills/design-review"
   ]
 }
