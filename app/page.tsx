@@ -97,6 +97,7 @@ export default function Home() {
   const [achievementQueue, setAchievementQueue] = useState<Achievement[]>([]);
   const [streak, setStreak] = useState(0);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [savedQuiz, setSavedQuiz] = useState<QuizState | null>(null);
 
   useEffect(() => {
     setShuffleByTopic(loadJSON('shuffleByTopic', {}));
@@ -109,6 +110,7 @@ export default function Home() {
     const saved = (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
+    setSavedQuiz(loadJSON('savedQuiz', null));
   }, []);
 
   function toggleTheme() {
@@ -360,7 +362,21 @@ export default function Home() {
   }
 
   function handleBack() {
+    if (quizState && screen === 'quiz') {
+      saveJSON('savedQuiz', quizState);
+    } else {
+      saveJSON('savedQuiz', null);
+    }
     setScreen('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resumeQuiz() {
+    const saved = loadJSON<QuizState | null>('savedQuiz', null);
+    if (!saved) return;
+    setQuizState(saved);
+    setScreen('quiz');
+    saveJSON('savedQuiz', null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -408,6 +424,17 @@ export default function Home() {
             <div className="subtitle">Тести для <span>тренера</span></div>
             <div className="tag-line">Анатомія · Біомеханіка · Психологія · Методика тренувань</div>
           </div>
+
+          {savedQuiz && savedQuiz.topic && (
+            <div className="resume-banner" onClick={resumeQuiz}>
+              <div className="resume-info">
+                <span className="resume-label">Незавершений тест</span>
+                <span className="resume-title">{savedQuiz.topic.icon} {savedQuiz.topic.title}</span>
+                <span className="resume-sub">Питання {savedQuiz.qIdx + 1} з {savedQuiz.topic.questions.length}</span>
+              </div>
+              <span className="resume-cta">Продовжити →</span>
+            </div>
+          )}
 
           <div id="exam-block">
             <button className="exam-card" onClick={startExam}>
