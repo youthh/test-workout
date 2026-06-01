@@ -364,19 +364,17 @@ export default function Home() {
   }
 
   function handleBack() {
-    if (quizState && screen === 'quiz') {
+    if (screen === 'quiz' && quizState) {
       saveJSON('savedQuiz', quizState);
-    } else {
-      saveJSON('savedQuiz', null);
+      setSavedQuiz(quizState);
     }
     setScreen('home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function resumeQuiz() {
-    const saved = loadJSON<QuizState | null>('savedQuiz', null);
-    if (!saved) return;
-    setQuizState(saved);
+    if (!savedQuiz) return;
+    setQuizState(savedQuiz);
     setScreen('quiz');
     saveJSON('savedQuiz', null);
     setSavedQuiz(null);
@@ -389,9 +387,7 @@ export default function Home() {
   }
 
   function resumeSimulator() {
-    const saved = loadJSON<SavedSimulator | null>('savedSimulator', null);
-    if (!saved) return;
-    setSavedSimulator(saved);
+    if (!savedSimulator) return;
     setScreen('simulator');
     saveJSON('savedSimulator', null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
