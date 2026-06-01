@@ -1,5 +1,6 @@
 'use client';
 import { TOPICS } from '../data/topics';
+import ProgressChart from './ProgressChart';
 
 export interface Stats {
   totalAnswered: number;
@@ -78,6 +79,9 @@ export default function StatsScreen({ stats, streak, onBack }: StatsScreenProps)
             <div className="stat-val good">{stats.examsPassed}</div>
           </div>
         </div>
+
+        <div className="section-label">Прогрес (14 днів)</div>
+        <ProgressChart byDate={stats.byDate} days={14} />
 
         <div className="section-label">Активність (12 тижнів)</div>
         <div className="heatmap-wrap">
