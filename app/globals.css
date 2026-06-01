@@ -102,10 +102,24 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .resume-sub { font-size: 12px; color: var(--text-mute); }
-  .resume-cta {
-    font-size: 14px; font-weight: 700; color: var(--accent);
-    white-space: nowrap; letter-spacing: 1px; text-transform: uppercase;
+  .resume-banner { cursor: default; }
+  .resume-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+  .resume-cta-btn {
+    font-size: 13px; font-weight: 700; color: #fff;
+    background: var(--accent); border: none;
+    border-radius: 8px; padding: 7px 14px;
+    cursor: pointer; letter-spacing: 0.5px;
+    font-family: inherit; white-space: nowrap;
+    transition: opacity .2s;
   }
+  .resume-cta-btn:hover { opacity: 0.85; }
+  .resume-discard {
+    font-size: 11px; color: var(--text-mute); background: transparent;
+    border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+    transition: color .2s, border-color .2s;
+  }
+  .resume-discard:hover { color: var(--text-dim); border-color: var(--text-mute); }
 
   /* ── Exit confirmation modal ── */
   .exit-overlay {
