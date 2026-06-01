@@ -35,11 +35,16 @@ export default function ProgressChart({ byDate, days = 14 }: ProgressChartProps)
     correct: byDate[date]?.correct ?? 0,
   }));
 
-  const maxAnswered = Math.max(...data.map(d => d.answered), 5);
-  const totalAnswered = data.reduce((s, d) => s + d.answered, 0);
-  const totalCorrect = data.reduce((s, d) => s + d.correct, 0);
+  const { maxAnswered, totalAnswered, totalCorrect, activeDays } = data.reduce(
+    (acc, d) => ({
+      maxAnswered: Math.max(acc.maxAnswered, d.answered),
+      totalAnswered: acc.totalAnswered + d.answered,
+      totalCorrect: acc.totalCorrect + d.correct,
+      activeDays: acc.activeDays + (d.answered > 0 ? 1 : 0),
+    }),
+    { maxAnswered: 5, totalAnswered: 0, totalCorrect: 0, activeDays: 0 }
+  );
   const avgAccuracy = totalAnswered > 0 ? Math.round(totalCorrect / totalAnswered * 100) : 0;
-  const activeDays = data.filter(d => d.answered > 0).length;
 
   // SVG dimensions
   const W = 420;
@@ -51,33 +56,18 @@ export default function ProgressChart({ byDate, days = 14 }: ProgressChartProps)
   const chartW = W - PAD_L - PAD_R;
   const chartH = H - PAD_T - PAD_B;
 
-  const barW = (chartW / days) * 0.6;
   const barGap = chartW / days;
+  const barW = barGap * 0.6;
+  const barOffset = (barGap - barW) / 2;
 
   const gridLines = [0, 0.25, 0.5, 0.75, 1];
 
-  function barX(i: number) {
-    return PAD_L + i * barGap + (barGap - barW) / 2;
-  }
-
-  function valY(val: number) {
-    return PAD_T + chartH - (val / maxAnswered) * chartH;
-  }
-
-  // Accuracy sparkline path
-  const sparkPoints = data
-    .map((d, i) => {
-      if (d.answered === 0) return null;
-      const x = PAD_L + i * barGap + barGap / 2;
-      const acc = d.correct / d.answered;
-      const y = PAD_T + chartH - acc * chartH;
-      return `${x},${y}`;
-    })
-    .filter(Boolean);
-
-  const sparkPath = sparkPoints.length > 1
-    ? 'M ' + sparkPoints.join(' L ')
-    : null;
+  const sparkPoints = data.flatMap((d, i) => {
+    if (d.answered === 0) return [];
+    const x = PAD_L + i * barGap + barGap / 2;
+    const y = PAD_T + chartH - (d.correct / d.answered) * chartH;
+    return [`${x},${y}`];
+  });
 
   if (totalAnswered === 0) {
     return (
@@ -134,7 +124,7 @@ export default function ProgressChart({ byDate, days = 14 }: ProgressChartProps)
 
         {/* Bars */}
         {data.map((d, i) => {
-          const x = barX(i);
+          const x = PAD_L + i * barGap + barOffset;
           const totalH = (d.answered / maxAnswered) * chartH;
           const correctH = (d.correct / maxAnswered) * chartH;
           const baseY = PAD_T + chartH;
@@ -177,7 +167,7 @@ export default function ProgressChart({ byDate, days = 14 }: ProgressChartProps)
         })}
 
         {/* Accuracy sparkline */}
-        {sparkPath && (
+        {sparkPoints.length > 1 && (
           <polyline
             points={sparkPoints.join(' ')}
             fill="none"

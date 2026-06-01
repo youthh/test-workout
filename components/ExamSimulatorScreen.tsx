@@ -96,7 +96,6 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
   function startExam() {
     const qs = buildPool(selectedTopic, questionCount);
     if (!qs.length) { onToast('Немає питань для вибраних параметрів'); return; }
-    onSaveState({ questions: [], currentIdx: 0, questionCount, timerEnabled }); // clear any saved state
     setQuestions(qs);
     setCurrentIdx(0);
     setStartTime(Date.now());
