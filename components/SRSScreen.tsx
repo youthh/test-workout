@@ -194,24 +194,27 @@ export default function SRSScreen({ onBack }: SRSScreenProps) {
   const [revealed, setRevealed] = useState(false);
   const [doneToday, setDoneToday] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [ratingLog, setRatingLog] = useState<{ topicId: string; rating: number }[]>([]);
 
   const startSession = useCallback((ids: string[]) => {
     const q = buildDueQueue(ids);
     setQueue(q);
     setIdx(0);
     setDoneToday(0);
+    setRatingLog([]);
     setFinished(q.length === 0);
     setPhase('study');
   }, []);
 
   const handleRate = useCallback((rating: SRSRating) => {
     if (idx >= queue.length) return;
-    const { card } = queue[idx];
+    const { card, topicId } = queue[idx];
     const updated = sm2(card, rating);
     const cards = loadSRSCards();
     cards[cardKey(card.topicId, card.qIdx)] = updated;
     saveSRSCards(cards);
 
+    setRatingLog(prev => [...prev, { topicId, rating }]);
     setDoneToday(d => d + 1);
     setRevealed(false);
 
@@ -224,6 +227,18 @@ export default function SRSScreen({ onBack }: SRSScreenProps) {
   }
 
   if (finished) {
+    // build per-topic breakdown
+    const topicBreakdown: Record<string, { title: string; total: number; known: number; color: string }> = {};
+    ratingLog.forEach(({ topicId, rating }) => {
+      if (!topicBreakdown[topicId]) {
+        const topic = TOPICS.find(t => t.id === topicId);
+        topicBreakdown[topicId] = { title: topic?.title ?? topicId, total: 0, known: 0, color: getCatColor(topicId) };
+      }
+      topicBreakdown[topicId].total++;
+      if (rating >= 4) topicBreakdown[topicId].known++;
+    });
+    const breakdown = Object.values(topicBreakdown).sort((a, b) => b.total - a.total);
+
     return (
       <div className="quiz-screen active">
         <div className="container">
@@ -235,11 +250,32 @@ export default function SRSScreen({ onBack }: SRSScreenProps) {
           <div className="result-card" style={{ textAlign: 'center', marginTop: 32 }}>
             <div className="result-emoji">🧠</div>
             <div className="result-title">Сесію завершено!</div>
-            <div className="result-subtitle">Ти повторив {doneToday} карток.</div>
-            <div className="actions" style={{ justifyContent: 'center', marginTop: 24 }}>
-              <button className="btn-secondary" onClick={() => setPhase('select')}>Ще раз вибрати теми</button>
-              <button className="btn-secondary" onClick={onBack}>← До тем</button>
+            <div className="result-subtitle">Ти повторив {doneToday} карток</div>
+          </div>
+
+          {breakdown.length > 0 && (
+            <div className="srs-breakdown">
+              <div className="srs-breakdown-title">Розподіл по темах</div>
+              {breakdown.map(b => {
+                const pct = b.total > 0 ? Math.round(b.known / b.total * 100) : 0;
+                return (
+                  <div key={b.title} className="srs-bd-row">
+                    <div className="srs-bd-name">{b.title}</div>
+                    <div className="srs-bd-bar-wrap">
+                      <div className="srs-bd-bar" style={{ width: pct + '%', background: b.color }} />
+                    </div>
+                    <div className="srs-bd-stat" style={{ color: b.color }}>
+                      {b.known}/{b.total}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+          )}
+
+          <div className="actions" style={{ justifyContent: 'center', marginTop: 24 }}>
+            <button className="btn-secondary" onClick={() => setPhase('select')}>Ще раз вибрати теми</button>
+            <button className="btn-secondary" onClick={onBack}>← До тем</button>
           </div>
         </div>
       </div>

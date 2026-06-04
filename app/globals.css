@@ -729,6 +729,16 @@
   .srs-start-btn:hover:not(:disabled) { filter: brightness(1.1); }
   .srs-start-btn:disabled { background: var(--bg-card); color: var(--text-mute); border: 1px solid var(--border); cursor: default; }
   .srs-no-due { text-align: center; font-size: 13px; color: var(--text-mute); margin-top: 10px; }
+
+  .srs-breakdown { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-top: 20px; }
+  .srs-breakdown-title { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-mute); margin-bottom: 16px; }
+  .srs-bd-row { display: grid; grid-template-columns: 1fr 2fr auto; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .srs-bd-row:last-child { margin-bottom: 0; }
+  .srs-bd-name { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .srs-bd-bar-wrap { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .srs-bd-bar { height: 100%; border-radius: 99px; transition: width .4s ease; }
+  .srs-bd-stat { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+
   .srs-rate-btn {
     flex: 1; padding: 12px 8px; border-radius: 10px;
     font-family: inherit; font-size: 13px; font-weight: 700;
