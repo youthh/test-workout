@@ -537,6 +537,8 @@ export default function Home() {
                 shuffle={!!shuffleByTopic[t.id]}
                 timerOn={!!timerByTopic[t.id]}
                 mistakesCount={(mistakes[t.id] || []).length}
+                lastPct={(() => { const h = history[t.id]; return h && h.length ? h[h.length - 1].pct : 0; })()}
+                lastScore={(() => { const h = history[t.id]; return h && h.length ? h[h.length - 1].score : 0; })()}
                 onStart={() => startQuiz(i)}
                 onToggleShuffle={(e) => toggleShuffle(e, t.id)}
                 onToggleTimer={(e) => toggleTimer(e, t.id)}
