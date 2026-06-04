@@ -434,133 +434,228 @@ export default function Home() {
       />
       <WelcomeModal onDismiss={() => {}} />
 
-      {screen === 'home' && (
-        <div className="container">
-          <div className="hero">
-            <button className="theme-toggle" onClick={toggleTheme} title="Змінити тему">
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
-            <div className="brand-icon">
-              <span style={{ fontFamily: 'Impact, sans-serif', fontSize: 22, color: '#fff', letterSpacing: 1 }}>IA</span>
-            </div>
-            <h1 className="title">Iron Academy</h1>
-            <div className="subtitle">Тести для <span>тренера</span></div>
-            <div className="tag-line">Анатомія · Біомеханіка · Психологія · Методика тренувань</div>
-          </div>
+      {screen === 'home' && (() => {
+        const CATS = [
+          { key: 'anatomy',   label: 'Анатомія',    color: '#ff7b00', ids: ['osteology','myology','muscle-functions'] },
+          { key: 'bio',       label: 'Біомеханіка', color: '#4a9eff', ids: ['planes','spine','arms','legs','chest','shoulders','back','core'] },
+          { key: 'method',    label: 'Методика',    color: '#3ecf8e', ids: ['movement-patterns','pyramid','training-programming'] },
+          { key: 'other',     label: 'Інше',        color: '#a78bfa', ids: ['psych','nutrition'] },
+        ];
+        const totalQ = TOPICS.reduce((s, t) => s + t.questions.length, 0);
+        const answeredQ = stats.totalAnswered;
+        const accuracy = answeredQ > 0 ? Math.round(stats.totalCorrect / answeredQ * 100) : 0;
+        const topicsStarted = TOPICS.filter(t => history[t.id]?.length).length;
+        const totalMistakes = Object.values(mistakes).reduce((s, a) => s + a.length, 0);
+        const getTopicPct = (id: string) => { const h = history[id]; return h?.length ? h[h.length - 1].pct : 0; };
+        const getTopicScore = (id: string) => { const h = history[id]; return h?.length ? h[h.length - 1].score : 0; };
 
-          {savedQuiz && savedQuiz.topic && (
-            <div className="resume-banner">
-              <div className="resume-info">
-                <span className="resume-label">Незавершений тест</span>
-                <span className="resume-title">{savedQuiz.topic.icon} {savedQuiz.topic.title}</span>
-                <span className="resume-sub">Питання {savedQuiz.qIdx + 1} з {savedQuiz.topic.questions.length}</span>
+        return (
+          <div className="home-shell">
+            {/* ── TOP NAV ── */}
+            <nav className="home-topnav">
+              <div className="hn-logo">
+                <div className="hn-logo-icon">IA</div>
+                <span className="hn-logo-text">Iron Academy</span>
               </div>
-              <div className="resume-actions">
-                <button className="resume-discard" onClick={discardQuiz}>Завершити</button>
-                <button className="resume-cta-btn" onClick={resumeQuiz}>Продовжити →</button>
+              <div className="hn-spacer" />
+              {streak > 0 && <div className="hn-streak">🔥 {streak} {streak === 1 ? 'день' : streak < 5 ? 'дні' : 'днів'} поспіль</div>}
+              <div className="hn-stats">
+                {answeredQ > 0 && <span>Питань <b>{answeredQ}</b></span>}
+                {accuracy > 0 && <span>Точність <b style={{color:'#3ecf8e'}}>{accuracy}%</b></span>}
+                <span>Тем <b>{topicsStarted}/{TOPICS.length}</b></span>
               </div>
-            </div>
-          )}
+              <button className="hn-theme" onClick={toggleTheme}>{theme === 'dark' ? '☀️' : '🌙'}</button>
+            </nav>
 
-          {savedSimulator && (
-            <div className="resume-banner">
-              <div className="resume-info">
-                <span className="resume-label">Незавершений іспит</span>
-                <span className="resume-title">📝 Симулятор іспиту</span>
-                <span className="resume-sub">
-                  Питання {savedSimulator.currentIdx + 1} з {savedSimulator.questions.length} · відповіді: {savedSimulator.questions.filter(q => q.chosen !== null).length}
-                </span>
-              </div>
-              <div className="resume-actions">
-                <button className="resume-discard" onClick={discardSimulator}>Завершити</button>
-                <button className="resume-cta-btn" onClick={resumeSimulator}>Продовжити →</button>
-              </div>
-            </div>
-          )}
-
-          <div id="exam-block">
-            <button className="exam-card" onClick={startExam}>
-              <div className="exam-badge">Фінальний іспит</div>
-              <div className="exam-icon">🏆</div>
-              <div className="exam-title">Тренер чи ні?</div>
-              <div className="exam-desc">25 випадкових питань з усіх тем. Перевір свої знання!</div>
-              <div className="exam-cta">Почати іспит</div>
-            </button>
-          </div>
-
-          <div className="top-actions">
-            <button className="action-btn" onClick={() => setScreen('srs')}>
-              <span className="ico">🧠</span>
-              <span>SRS Повторення</span>
-            </button>
-            <button className="action-btn" onClick={() => setScreen('simulator')}>
-              <span className="ico">📝</span>
-              <span>Симулятор іспиту</span>
-            </button>
-            <button className="action-btn" onClick={() => setScreen('stats')}>
-              <span className="ico">📊</span>
-              <span>Кабінет</span>
-            </button>
-            <button className="action-btn" onClick={() => setScreen('achievements')}>
-              <span className="ico">🏅</span>
-              <span>Досягнення</span>
-              {achievements.length > 0 && (
-                <span className="action-pill">{achievements.length}</span>
+            {/* ── SIDEBAR ── */}
+            <aside className="home-sidebar">
+              <div className="hs-section">Інструменти</div>
+              <button className="hs-item hs-active"><span className="hs-ico">🏠</span>Головна</button>
+              <button className="hs-item" onClick={() => setScreen('flashcards')}><span className="hs-ico">🃏</span>Флеш-картки</button>
+              <button className="hs-item" onClick={() => setScreen('glossary')}><span className="hs-ico">📖</span>Глосарій</button>
+              <button className="hs-item" onClick={() => setScreen('anatomy')}><span className="hs-ico">🫀</span>Анатомія</button>
+              <button className="hs-item" onClick={() => setScreen('achievements')}>
+                <span className="hs-ico">🏅</span>Досягнення
+                {achievements.length > 0 && <span className="hs-badge">{achievements.length}</span>}
+              </button>
+              <button className="hs-item" onClick={() => setScreen('stats')}><span className="hs-ico">📊</span>Кабінет</button>
+              <button className="hs-item" onClick={() => setScreen('match')}><span className="hs-ico">🎯</span>Матч-гра</button>
+              <button className="hs-item" onClick={() => setScreen('srs')}><span className="hs-ico">🧠</span>SRS</button>
+              <button className="hs-item" onClick={() => setScreen('simulator')}><span className="hs-ico">📝</span>Симулятор</button>
+              {totalMistakes > 0 && (
+                <button className="hs-item" onClick={() => { const i = TOPICS.findIndex(t => (mistakes[t.id]||[]).length > 0); if (i>=0) startMistakes({ stopPropagation:()=>{}, preventDefault:()=>{} } as React.MouseEvent, i); }}>
+                  <span className="hs-ico">🎯</span>Помилки
+                  <span className="hs-badge" style={{background:'#ff7b00'}}>{totalMistakes}</span>
+                </button>
               )}
-            </button>
-            <button className="action-btn" onClick={() => setScreen('glossary')}>
-              <span className="ico">📖</span>
-              <span>Глосарій</span>
-            </button>
-            <button className="action-btn" onClick={() => setScreen('anatomy')}>
-              <span className="ico">🫀</span>
-              <span>Анатомія</span>
-            </button>
-            <button className="action-btn" onClick={() => setScreen('match')}>
-              <span className="ico">🎯</span>
-              <span>Match-гра</span>
-            </button>
-            <button className="action-btn" onClick={() => setScreen('flashcards')}>
-              <span className="ico">🃏</span>
-              <span>Флеш-картки</span>
-            </button>
+              {CATS.map(cat => {
+                const catTopics = TOPICS.filter(t => cat.ids.includes(t.id));
+                return (
+                  <div key={cat.key}>
+                    <div className="hs-section" style={{color: cat.color}}>{cat.label}</div>
+                    {catTopics.map(t => {
+                      const pct = getTopicPct(t.id);
+                      return (
+                        <button key={t.id} className="hs-topic" onClick={() => startQuiz(TOPICS.indexOf(t))}>
+                          <span className="hs-tnum">{String(TOPICS.indexOf(t)+1).padStart(2,'0')}</span>
+                          <span className="hs-tname">{t.title.replace('Біомеханіка: ','')}</span>
+                          <span className="hs-tbar"><span className="hs-tbar-fill" style={{width:`${pct}%`, background: cat.color}} /></span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </aside>
+
+            {/* ── MAIN ── */}
+            <main className="home-main">
+
+              {/* resume banners */}
+              {savedQuiz?.topic && (
+                <div className="resume-banner">
+                  <div className="resume-info">
+                    <span className="resume-label">Незавершений тест</span>
+                    <span className="resume-title" dangerouslySetInnerHTML={{__html: savedQuiz.topic.icon + ' ' + savedQuiz.topic.title}} />
+                    <span className="resume-sub">Питання {savedQuiz.qIdx + 1} з {savedQuiz.topic.questions.length}</span>
+                  </div>
+                  <div className="resume-actions">
+                    <button className="resume-discard" onClick={discardQuiz}>Завершити</button>
+                    <button className="resume-cta-btn" onClick={resumeQuiz}>Продовжити →</button>
+                  </div>
+                </div>
+              )}
+              {savedSimulator && (
+                <div className="resume-banner">
+                  <div className="resume-info">
+                    <span className="resume-label">Незавершений іспит</span>
+                    <span className="resume-title">📝 Симулятор іспиту</span>
+                    <span className="resume-sub">Питання {savedSimulator.currentIdx+1} з {savedSimulator.questions.length}</span>
+                  </div>
+                  <div className="resume-actions">
+                    <button className="resume-discard" onClick={discardSimulator}>Завершити</button>
+                    <button className="resume-cta-btn" onClick={resumeSimulator}>Продовжити →</button>
+                  </div>
+                </div>
+              )}
+
+              {/* hero strip */}
+              <div className="hm-hero-strip">
+                <div className="hm-hero-left">
+                  <div className="hm-greeting">Привіт, тренере 👋</div>
+                  <h1 className="hm-hero-title">Продовжуй<br /><span>прокачуватись</span></h1>
+                  <div className="hm-hero-stats">
+                    <div className="hm-hstat"><div className="hm-hstat-val" style={{color:'#ff7b00'}}>{answeredQ}</div><div className="hm-hstat-lbl">Питань</div></div>
+                    <div className="hm-hstat"><div className="hm-hstat-val" style={{color:'#3ecf8e'}}>{accuracy > 0 ? `${accuracy}%` : '—'}</div><div className="hm-hstat-lbl">Точність</div></div>
+                    <div className="hm-hstat"><div className="hm-hstat-val" style={{color:'#f59e0b'}}>{topicsStarted}/{TOPICS.length}</div><div className="hm-hstat-lbl">Тем</div></div>
+                    {totalMistakes > 0 && <div className="hm-hstat"><div className="hm-hstat-val" style={{color:'#a78bfa'}}>{totalMistakes}</div><div className="hm-hstat-lbl">Помилок</div></div>}
+                  </div>
+                </div>
+                <div className="hm-hero-right">
+                  <button className="hm-exam-card" onClick={startExam}>
+                    <div className="hm-exam-sup">Фінальний іспит</div>
+                    <div className="hm-exam-title">Тренер чи ні?</div>
+                    <div className="hm-exam-desc">25 питань з усіх тем. Перевір знання!</div>
+                    <div className="hm-exam-btn">Почати іспит →</div>
+                  </button>
+                  {streak > 0 && (
+                    <div className="hm-streak">
+                      <span className="hm-streak-fire">🔥</span>
+                      <div>
+                        <div className="hm-streak-days">{streak} {streak === 1 ? 'день' : streak < 5 ? 'дні' : 'днів'} поспіль</div>
+                        <div className="hm-streak-sub">Не переривай серію!</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* overall progress */}
+              <div className="hm-overall">
+                <div className="hm-overall-left">
+                  <div className="hm-overall-label">Загальний прогрес по темах</div>
+                  <div className="hm-seg">
+                    {TOPICS.map(t => {
+                      const pct = getTopicPct(t.id);
+                      const cat = CATS.find(c => c.ids.includes(t.id));
+                      return (
+                        <div key={t.id} className="hm-seg-item" style={{background: pct > 0 ? (cat?.color ?? '#333') : '#1a1a1a', opacity: pct > 0 ? 0.3 + pct/100*0.7 : 0.15}} />
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="hm-overall-right">
+                  <div className="hm-overall-big"><b>{answeredQ}</b> / {totalQ}</div>
+                  <div className="hm-overall-sub">питань пройдено</div>
+                </div>
+              </div>
+
+              {/* tools */}
+              <div className="hm-tools">
+                <button className="hm-tool" onClick={() => setScreen('flashcards')}><span>🃏</span><span className="hm-tool-lbl">Флеш-картки</span></button>
+                <button className="hm-tool" onClick={() => setScreen('glossary')}><span>📖</span><span className="hm-tool-lbl">Глосарій</span></button>
+                <button className="hm-tool" onClick={() => setScreen('anatomy')}><span>🫀</span><span className="hm-tool-lbl">Анатомія</span></button>
+                <button className="hm-tool" onClick={() => setScreen('match')}><span>🧩</span><span className="hm-tool-lbl">Матч-гра</span></button>
+                <button className="hm-tool" onClick={() => setScreen('srs')}><span>🧠</span><span className="hm-tool-lbl">SRS</span></button>
+                <button className="hm-tool" onClick={() => setScreen('simulator')}><span>📝</span><span className="hm-tool-lbl">Симулятор</span></button>
+                <button className="hm-tool" onClick={() => setScreen('stats')}><span>📊</span><span className="hm-tool-lbl">Кабінет</span></button>
+                <button className="hm-tool" onClick={() => setScreen('achievements')}>
+                  <span>🏅</span><span className="hm-tool-lbl">Досягнення</span>
+                  {achievements.length > 0 && <span className="hm-tool-badge">{achievements.length}</span>}
+                </button>
+              </div>
+
+              {/* topics by category */}
+              {CATS.map(cat => {
+                const catTopics = TOPICS.filter(t => cat.ids.includes(t.id));
+                const catQ = catTopics.reduce((s, t) => s + t.questions.length, 0);
+                return (
+                  <div key={cat.key} className="hm-cat-block">
+                    <div className="hm-cat-header">
+                      <div className="hm-cat-dot" style={{background: cat.color}} />
+                      <div className="hm-cat-name" style={{color: cat.color}}>{cat.label}</div>
+                      <div className="hm-cat-line" />
+                      <div className="hm-cat-count">{catTopics.length} {catTopics.length === 1 ? 'тема' : catTopics.length < 5 ? 'теми' : 'тем'} · {catQ} питань</div>
+                    </div>
+                    <div className="hm-topics-grid">
+                      {catTopics.map(t => {
+                        const idx = TOPICS.indexOf(t);
+                        const pct = getTopicPct(t.id);
+                        const score = getTopicScore(t.id);
+                        return (
+                          <TopicCard
+                            key={t.id}
+                            topic={t}
+                            index={idx}
+                            shuffle={!!shuffleByTopic[t.id]}
+                            timerOn={!!timerByTopic[t.id]}
+                            mistakesCount={(mistakes[t.id] || []).length}
+                            lastPct={pct}
+                            lastScore={score}
+                            onStart={() => startQuiz(idx)}
+                            onToggleShuffle={(e) => toggleShuffle(e, t.id)}
+                            onToggleTimer={(e) => toggleTimer(e, t.id)}
+                            onStartMistakes={(e) => startMistakes(e, idx)}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+
+              <footer>
+                <div className="copyright-main">© 2026 Iron Academy · Valiavskiy Oleksiy</div>
+                <div className="copyright-sub">Created with <span className="heart">❤</span> & AI</div>
+                <div className="contact-block">
+                  <a className="contact-pill" href="https://t.me/emotionyx" target="_blank" rel="noopener"><span className="ico">✈️</span><span>Telegram · @emotionyx</span></a>
+                  <a className="contact-pill insta" href="https://www.instagram.com/valiavskiy/" target="_blank" rel="noopener"><span className="ico">📷</span><span>Instagram · valiavskiy</span></a>
+                </div>
+              </footer>
+            </main>
           </div>
-
-          <div className="section-label">Теми</div>
-
-          <div className="topics">
-            {TOPICS.map((t, i) => (
-              <TopicCard
-                key={t.id}
-                topic={t}
-                index={i}
-                shuffle={!!shuffleByTopic[t.id]}
-                timerOn={!!timerByTopic[t.id]}
-                mistakesCount={(mistakes[t.id] || []).length}
-                onStart={() => startQuiz(i)}
-                onToggleShuffle={(e) => toggleShuffle(e, t.id)}
-                onToggleTimer={(e) => toggleTimer(e, t.id)}
-                onStartMistakes={(e) => startMistakes(e, i)}
-              />
-            ))}
-          </div>
-
-          <footer>
-            <div className="copyright-main">© 2026 Iron Academy · Valiavskiy Oleksiy</div>
-            <div className="copyright-sub">Created with <span className="heart">❤</span> & AI</div>
-            <div className="contact-title">— Зв'язатися зі мною —</div>
-            <div className="contact-block">
-              <a className="contact-pill" href="https://t.me/emotionyx" target="_blank" rel="noopener">
-                <span className="ico">✈️</span><span>Telegram · @emotionyx</span>
-              </a>
-              <a className="contact-pill insta" href="https://www.instagram.com/valiavskiy/" target="_blank" rel="noopener">
-                <span className="ico">📷</span><span>Instagram · valiavskiy</span>
-              </a>
-            </div>
-            <div className="contact-note">Питання, побажання, баги — пиши мені напряму 💬</div>
-          </footer>
-        </div>
-      )}
+        );
+      })()}
 
       {screen === 'quiz' && quizState && (
         <>
