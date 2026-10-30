@@ -1,23 +1,5 @@
 'use client';
-
-const CATEGORIES: Record<string, { label: string; color: string }> = {
-  'muscle-functions': { label: 'Анатомія',    color: '#ff7b00' },
-  'osteology':        { label: 'Анатомія',    color: '#ff7b00' },
-  'myology':          { label: 'Анатомія',    color: '#ff7b00' },
-  'planes':           { label: 'Біомеханіка', color: '#4a9eff' },
-  'spine':            { label: 'Біомеханіка', color: '#4a9eff' },
-  'arms':             { label: 'Біомеханіка', color: '#4a9eff' },
-  'legs':             { label: 'Біомеханіка', color: '#4a9eff' },
-  'pyramid':          { label: 'Методика',    color: '#3ecf8e' },
-  'psych':            { label: 'Психологія',  color: '#a78bfa' },
-  'chest':            { label: 'Біомеханіка', color: '#4a9eff' },
-  'shoulders':        { label: 'Біомеханіка', color: '#4a9eff' },
-  'back':             { label: 'Біомеханіка', color: '#4a9eff' },
-  'core':             { label: 'Біомеханіка', color: '#4a9eff' },
-  'movement-patterns':    { label: 'Методика',    color: '#3ecf8e' },
-  'training-programming': { label: 'Методика',    color: '#3ecf8e' },
-  'nutrition':            { label: 'Харчування',  color: '#f472b6' },
-};
+import { categoryOf } from '../data/categories';
 
 interface TopicCardProps {
   topic: { id: string; icon: string; title: string; desc: string; questions: unknown[] };
@@ -38,7 +20,7 @@ export default function TopicCard({
   lastPct, lastScore,
   onStart, onToggleShuffle, onToggleTimer, onStartMistakes,
 }: TopicCardProps) {
-  const cat = CATEGORIES[topic.id] ?? { label: 'Загальне', color: '#ff7b00' };
+  const cat = categoryOf(topic.id);
   const total = topic.questions.length;
   const hasProgress = lastPct > 0;
 
@@ -49,10 +31,7 @@ export default function TopicCard({
       onClick={onStart}
     >
       {/* watermark emoji */}
-      <span
-        className="tc3-bg-icon"
-        dangerouslySetInnerHTML={{ __html: topic.icon }}
-      />
+      <span className="tc3-bg-icon" aria-hidden="true">{topic.icon}</span>
 
       {/* category */}
       <div className="tc3-cat">{cat.label}</div>
@@ -67,14 +46,14 @@ export default function TopicCard({
       <p className="tc3-desc">{topic.desc}</p>
 
       {/* toggles */}
-      <div className={`card-shuffle${shuffle ? ' on' : ''}`} onClick={onToggleShuffle}>
-        <span className="left"><span className="icon">🔀</span><span>Перемішати</span></span>
-        <span className="mini-toggle" />
-      </div>
-      <div className={`card-shuffle${timerOn ? ' on' : ''}`} onClick={onToggleTimer}>
-        <span className="left"><span className="icon">⏱️</span><span>Таймер 30 сек</span></span>
-        <span className="mini-toggle" />
-      </div>
+      <button type="button" className={`card-shuffle${shuffle ? ' on' : ''}`} onClick={onToggleShuffle} aria-pressed={shuffle}>
+        <span className="left"><span className="icon" aria-hidden="true">🔀</span><span>Перемішати</span></span>
+        <span className="mini-toggle" aria-hidden="true" />
+      </button>
+      <button type="button" className={`card-shuffle${timerOn ? ' on' : ''}`} onClick={onToggleTimer} aria-pressed={timerOn}>
+        <span className="left"><span className="icon" aria-hidden="true">⏱️</span><span>Таймер 30 сек</span></span>
+        <span className="mini-toggle" aria-hidden="true" />
+      </button>
 
       {mistakesCount > 0 && (
         <button className="card-mistakes" onClick={onStartMistakes}>
@@ -93,7 +72,9 @@ export default function TopicCard({
       {/* footer */}
       <div className="tc3-footer">
         <span>{hasProgress ? `${lastScore} / ${total} питань` : `${total} питань`}</span>
-        <span className="tc3-go">{hasProgress ? 'Продовжити →' : 'Почати →'}</span>
+        <button type="button" className="tc3-go" onClick={e => { e.stopPropagation(); onStart(); }}>
+          {hasProgress ? 'Пройти знову' : 'Почати тест'}
+        </button>
       </div>
     </div>
   );

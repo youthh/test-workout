@@ -36,8 +36,8 @@ Report the error and stop.
 ### 2. Check what changed vs production
 
 ```bash
-git -C /Users/emotion/Desktop/iron-academy log origin/main..origin/develop --oneline
-git -C /Users/emotion/Desktop/iron-academy diff origin/main...origin/develop --stat
+git -C /Users/emotion/Desktop/workout log origin/main..origin/develop --oneline
+git -C /Users/emotion/Desktop/workout diff origin/main...origin/develop --stat
 ```
 
 Use this to understand what features were added — focus testing on those areas.
@@ -45,7 +45,7 @@ Use this to understand what features were added — focus testing on those areas
 ### 3. Run TypeScript check locally
 
 ```bash
-PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx tsc --noEmit -p /Users/emotion/Desktop/iron-academy/tsconfig.json 2>&1
+PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx tsc --noEmit -p /Users/emotion/Desktop/workout/tsconfig.json 2>&1
 ```
 
 Zero errors = ✅. Any errors = fix before releasing.

@@ -3,7 +3,9 @@ import type { ResultData } from '../types';
 
 interface ResultScreenProps {
   result: ResultData;
+  mistakesLeft: number;
   onRetry: () => void;
+  onMistakes: () => void;
   onHome: () => void;
   onToast: (msg: string) => void;
 }
@@ -16,8 +18,13 @@ function getVerdict(pct: number) {
   return { emoji: '🔥', title: 'Тренуйся!', sub: 'Не здавайся. Кожна помилка — це урок. Повтори матеріал.' };
 }
 
-export default function ResultScreen({ result, onRetry, onHome, onToast }: ResultScreenProps) {
-  const { score, total, maxCombo, topic, isExam } = result;
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+export default function ResultScreen({ result, mistakesLeft, onRetry, onMistakes, onHome, onToast }: ResultScreenProps) {
+  const { score, total, maxCombo, topic, isExam, answeredHistory, order } = result;
+  const wrong = answeredHistory
+    .map((h, pos) => ({ h, q: topic.questions[order[pos]] }))
+    .filter(x => x.h && !x.h.correct);
   const pct = Math.round(score / total * 100);
   const verdict = getVerdict(pct);
 
@@ -46,7 +53,30 @@ export default function ResultScreen({ result, onRetry, onHome, onToast }: Resul
             <button className="btn-secondary" onClick={onHome}>← До тем</button>
             <button className="btn-share" onClick={handleShare}>📤 Поділитися</button>
           </div>
+          {mistakesLeft > 0 && (
+            <button className="btn-secondary result-mistakes-btn" onClick={onMistakes}>
+              🎯 Робота над помилками ({mistakesLeft})
+            </button>
+          )}
         </div>
+
+        {wrong.length > 0 && (
+          <details className="result-review">
+            <summary>Розбір помилок ({wrong.length})</summary>
+            <ol>
+              {wrong.map(({ h, q }, i) => (
+                <li key={i} className="rr-item">
+                  <p className="rr-q">{q.q}</p>
+                  {h!.chosen >= 0
+                    ? <p className="rr-bad">Твоя відповідь: {LETTERS[h!.chosen]}. {q.a[h!.chosen]}</p>
+                    : <p className="rr-bad">Час вийшов</p>}
+                  <p className="rr-good">Правильно: {LETTERS[q.c]}. {q.a[q.c]}</p>
+                  <p className="rr-e">{q.e}</p>
+                </li>
+              ))}
+            </ol>
+          </details>
+        )}
       </div>
     </div>
   );

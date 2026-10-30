@@ -5,7 +5,7 @@ description: Commits all current changes and pushes to the develop branch of the
 
 # Push Feature to Develop
 
-You are helping push a new feature to the `develop` branch of the Iron Academy Next.js project at `/Users/emotion/Desktop/iron-academy`.
+You are helping push a new feature to the `develop` branch of the Iron Academy Next.js project at `/Users/emotion/Desktop/workout`.
 
 ## Steps
 
@@ -16,35 +16,35 @@ Format the message as: `feat: <message>` (unless user already includes a prefix 
 
 ### 2. Check what's changed
 ```bash
-git -C /Users/emotion/Desktop/iron-academy status
-git -C /Users/emotion/Desktop/iron-academy diff --stat HEAD
+git -C /Users/emotion/Desktop/workout status
+git -C /Users/emotion/Desktop/workout diff --stat HEAD
 ```
 Show the user a brief summary of what will be committed.
 
 ### 3. Validate vercel.json
 ```bash
-cat /Users/emotion/Desktop/iron-academy/vercel.json
+cat /Users/emotion/Desktop/workout/vercel.json
 ```
 Make sure it does NOT contain `nodeVersion` — that field breaks Vercel builds. If it's there, remove it before committing.
 
 ### 4. Stage and commit
 ```bash
-git -C /Users/emotion/Desktop/iron-academy add -A
-git -C /Users/emotion/Desktop/iron-academy commit -m "<message>
+git -C /Users/emotion/Desktop/workout add -u && git -C /Users/emotion/Desktop/workout add app components data lib types
+git -C /Users/emotion/Desktop/workout commit -m "<message>
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```
 
 ### 5. Push to develop
 ```bash
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" push origin develop 2>&1
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" push origin develop 2>&1
 ```
 
 If push fails — report the error and stop. Do not proceed.
 
 ### 6. Run Next.js build
 ```bash
-PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx next build /Users/emotion/Desktop/iron-academy 2>&1
+PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx next build /Users/emotion/Desktop/workout 2>&1
 ```
 
 This takes ~30 seconds. Tell the user you're checking the build.
