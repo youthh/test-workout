@@ -1,3 +1,4 @@
+import { dateKey } from '../lib/utils';
 export interface SRSCard {
   topicId: string;
   qIdx: number;
@@ -11,7 +12,7 @@ export interface SRSCard {
 export type SRSRating = 1 | 3 | 5; // 1=forgot, 3=hard, 5=easy
 
 export function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
+  return dateKey();
 }
 
 export function sm2(card: SRSCard, rating: SRSRating): SRSCard {
@@ -37,7 +38,7 @@ export function sm2(card: SRSCard, rating: SRSRating): SRSCard {
     interval,
     repetitions,
     easeFactor,
-    nextReview: next.toISOString().slice(0, 10),
+    nextReview: dateKey(next),
     lastReview: todayStr(),
   };
 }

@@ -11,8 +11,8 @@ description: Applies a critical fix directly to the main branch and deploys to p
 
 Перед тим як починати, переконайся:
 ```bash
-git -C /Users/emotion/Desktop/iron-academy status
-git -C /Users/emotion/Desktop/iron-academy diff --stat HEAD
+git -C /Users/emotion/Desktop/workout status
+git -C /Users/emotion/Desktop/workout diff --stat HEAD
 ```
 
 Покажи користувачу що буде змінено. Якщо зміни стосуються більше 3 файлів або виглядають як фіча а не баг — зупинись і скажи: "Це схоже на фічу, а не hotfix. Використай `/push-feature` + `/release`."
@@ -27,7 +27,7 @@ curl -s -o /dev/null -w "%{http_code}" https://test-workout.vercel.app
 
 ### 2. Run TypeScript check
 ```bash
-PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx tsc --noEmit -p /Users/emotion/Desktop/iron-academy/tsconfig.json 2>&1
+PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx tsc --noEmit -p /Users/emotion/Desktop/workout/tsconfig.json 2>&1
 ```
 Якщо є TypeScript помилки — зупинись і покажи їх. Не деплой зламаний код.
 
@@ -35,22 +35,22 @@ PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" npx tsc --noEmit -p 
 
 Спочатку переключись на main і стягни останні зміни:
 ```bash
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" fetch origin
-git -C /Users/emotion/Desktop/iron-academy checkout main
-git -C /Users/emotion/Desktop/iron-academy pull origin main
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" fetch origin
+git -C /Users/emotion/Desktop/workout checkout main
+git -C /Users/emotion/Desktop/workout pull origin main
 ```
 
 Зроби коміт:
 ```bash
-git -C /Users/emotion/Desktop/iron-academy add -A
-git -C /Users/emotion/Desktop/iron-academy commit -m "hotfix: <опис проблеми>
+git -C /Users/emotion/Desktop/workout add -u && git -C /Users/emotion/Desktop/workout add app components data lib types
+git -C /Users/emotion/Desktop/workout commit -m "hotfix: <опис проблеми>
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```
 
 ### 4. Push to main
 ```bash
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" push origin main 2>&1
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" push origin main 2>&1
 ```
 
 ### 5. Deploy immediately
@@ -61,10 +61,10 @@ PATH="/Users/emotion/.nvm/versions/node/v20.18.3/bin:$PATH" vercel deploy --prod
 ### 6. Sync hotfix back to develop
 Важливо — інакше develop відстане від main:
 ```bash
-git -C /Users/emotion/Desktop/iron-academy checkout develop
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" pull origin develop
-git -C /Users/emotion/Desktop/iron-academy merge main --no-edit
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" push origin develop 2>&1
+git -C /Users/emotion/Desktop/workout checkout develop
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" pull origin develop
+git -C /Users/emotion/Desktop/workout merge main --no-edit
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" push origin develop 2>&1
 ```
 
 ### 7. Verify fix
@@ -82,6 +82,6 @@ curl -s -o /dev/null -w "%{http_code}" https://test-workout.vercel.app
 
 ### Якщо щось пішло не так
 
-**Push відхилено** → `git -C /Users/emotion/Desktop/iron-academy pull origin main --rebase` потім push знову
+**Push відхилено** → `git -C /Users/emotion/Desktop/workout pull origin main --rebase` потім push знову
 
 **Білд впав на Vercel** → перевір TypeScript помилки, відкоти через `/rollback` якщо є такий скіл

@@ -1,11 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-interface WelcomeModalProps {
-  onDismiss: () => void;
-}
-
-export default function WelcomeModal({ onDismiss }: WelcomeModalProps) {
+export default function WelcomeModal() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -16,7 +12,6 @@ export default function WelcomeModal({ onDismiss }: WelcomeModalProps) {
   function dismiss() {
     localStorage.setItem('welcomed', '1');
     setVisible(false);
-    onDismiss();
   }
 
   if (!visible) return null;

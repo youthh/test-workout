@@ -37,7 +37,11 @@ export interface QuizState {
   sourceIndices?: number[];
 }
 
-export type Screen = 'home' | 'quiz' | 'result';
+export type Screen =
+  | 'home' | 'quiz' | 'result' | 'stats' | 'achievements' | 'glossary' | 'anatomy'
+  | 'match' | 'flashcards' | 'srs' | 'simulator' | 'program';
+
+export type TopicHistory = Record<string, Array<{ date: string; score: number; total: number; pct: number }>>;
 
 export interface ResultData {
   score: number;
@@ -47,4 +51,5 @@ export interface ResultData {
   isExam: boolean;
   isMistakes: boolean;
   answeredHistory: (AnswerRecord | null)[];
+  order: number[];
 }

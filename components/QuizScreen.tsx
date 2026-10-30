@@ -26,6 +26,9 @@ export default function QuizScreen({
 
   const [exitModal, setExitModal] = useState(false);
   const { topic, qIdx, order, locked, hintsLeft, removedByHint, answeredHistory, timerOn } = state;
+  const onTimeoutRef = useRef(onTimeout);
+  onTimeoutRef.current = onTimeout;
+  const alreadyAnswered = !!answeredHistory[qIdx];
 
   const stopTimer = useCallback(() => {
     if (rafRef.current) {
@@ -36,9 +39,7 @@ export default function QuizScreen({
 
   useEffect(() => {
     stopTimer();
-    if (!timerOn || locked) return;
-    const savedAnswer = answeredHistory[qIdx];
-    if (savedAnswer) return;
+    if (!timerOn || locked || alreadyAnswered) return;
 
     timerStartRef.current = performance.now();
     function tick(now: number) {
@@ -50,14 +51,14 @@ export default function QuizScreen({
       else barRef.current?.classList.remove('low');
       if (remaining <= 0) {
         stopTimer();
-        onTimeout();
+        onTimeoutRef.current();
         return;
       }
       rafRef.current = requestAnimationFrame(tick);
     }
     rafRef.current = requestAnimationFrame(tick);
     return () => stopTimer();
-  }, [qIdx, timerOn, locked, stopTimer, onTimeout, answeredHistory]);
+  }, [qIdx, timerOn, locked, alreadyAnswered, stopTimer]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -68,7 +69,10 @@ export default function QuizScreen({
         const idx = map[key];
         if (!removedByHint.includes(idx)) handleAnswer(idx);
       }
-      if ((key === 'enter' || key === ' ') && locked) onNext();
+      if ((key === 'enter' || key === ' ') && locked) {
+        e.preventDefault();
+        onNext();
+      }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

@@ -94,7 +94,7 @@ export default function AnatomyScreen({ onBack }: AnatomyScreenProps) {
             viewBox="0 0 200 400"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d={BODY_PATH} fill="#1a1a1a" stroke="#3a3a3a" strokeWidth="1.5" />
+            <path d={BODY_PATH} style={{ fill: 'var(--bg-card-hover)', stroke: 'var(--border)' }} strokeWidth="1.5" />
             {muscles.map(m => (
               <MuscleShape
                 key={m.id}
