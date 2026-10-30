@@ -1,4 +1,5 @@
 'use client';
+import { lastDays } from '../lib/utils';
 
 interface DayData {
   date: string;
@@ -11,24 +12,13 @@ interface ProgressChartProps {
   days?: number;
 }
 
-function getLast(n: number): string[] {
-  const result: string[] = [];
-  const today = new Date();
-  for (let i = n - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    result.push(d.toISOString().slice(0, 10));
-  }
-  return result;
-}
-
 function fmtLabel(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
   return `${d.getDate()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
 export default function ProgressChart({ byDate, days = 14 }: ProgressChartProps) {
-  const dates = getLast(days);
+  const dates = lastDays(days);
   const data: DayData[] = dates.map(date => ({
     date,
     answered: byDate[date]?.answered ?? 0,

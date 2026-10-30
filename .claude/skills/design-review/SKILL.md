@@ -58,7 +58,7 @@ for i in issues: print(i)
 python3 -c "
 import re
 
-with open('/Users/emotion/Desktop/iron-academy/app/globals.css') as f:
+with open('/Users/emotion/Desktop/workout/app/globals.css') as f:
     css = f.read()
 
 issues = []
@@ -103,7 +103,7 @@ for i in issues: print(i)
 python3 -c "
 import os, re, glob
 
-component_dir = '/Users/emotion/Desktop/iron-academy/components'
+component_dir = '/Users/emotion/Desktop/workout/components'
 files = glob.glob(f'{component_dir}/*.tsx')
 
 issues = []
@@ -122,7 +122,7 @@ for fpath in files:
         issues.append(f'⚠️  {name}: {divs_with_click} <div> з onClick без role/onKeyDown')
 
 # Global keyboard shortcuts exist?
-quiz = '/Users/emotion/Desktop/iron-academy/components/QuizScreen.tsx'
+quiz = '/Users/emotion/Desktop/workout/components/QuizScreen.tsx'
 with open(quiz) as f:
     q = f.read()
 if 'keydown' in q: ok.append('✅ Keyboard shortcuts в QuizScreen')

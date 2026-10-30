@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { TOPICS } from '../data/topics';
 import type { Question } from '../types';
+import { shuffleArray } from '../lib/utils';
 
 interface FlashCard {
   question: string;
@@ -10,14 +11,6 @@ interface FlashCard {
   topicTitle: string;
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function buildCards(topicId: string): FlashCard[] {
   const topics = topicId === '_all' ? TOPICS : TOPICS.filter(t => t.id === topicId);
@@ -136,7 +129,15 @@ export default function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
           </div>
         ) : (
           <>
-            <div className="fc-scene" onClick={() => setFlipped(f => !f)}>
+            <div
+              className="fc-scene"
+              role="button"
+              tabIndex={0}
+              aria-pressed={flipped}
+              aria-label={flipped ? 'Показати питання' : 'Показати відповідь'}
+              onClick={() => setFlipped(f => !f)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFlipped(f => !f); } }}
+            >
               <div className={`fc-card${flipped ? ' flipped' : ''}`}>
                 <div className="fc-face fc-front">
                   <div className="fc-label" style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>

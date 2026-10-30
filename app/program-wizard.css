@@ -1,0 +1,26 @@
+/* Program wizard client step + screen shell (pw-*, ps-*) */
+  .pw-fields { display: grid; gap: 16px; }
+  .pw-field { display: grid; gap: 6px; border: none; padding: 0; min-width: 0; }
+  .pw-field > span, .pw-field legend { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: 0; font-size: 13px; color: var(--text-dim); margin-bottom: 2px; }
+  .pw-field input, .pw-field textarea {
+    width: 100%; font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: 0;
+    color: var(--text); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; resize: vertical;
+  }
+  .pw-field input:focus-visible, .pw-field textarea:focus-visible, .pw-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .pw-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pw-chip {
+    font: 600 14px system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: 0; padding: 9px 14px; border-radius: 99px; cursor: pointer;
+    background: var(--bg-card); color: var(--text-dim); border: 1px solid var(--border);
+  }
+  .pw-chip.on { background: var(--bad-bg); color: var(--text); border-color: var(--accent); }
+  .pw-injury-notes { list-style: none; display: grid; gap: 4px; margin-top: 8px; font: 13px/1.4 system-ui, sans-serif; letter-spacing: 0; color: var(--text-dim); }
+  .pw-injury-notes li::before { content: '⚠ '; color: var(--accent); }
+
+  .ps-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .ps-bar-spacer { flex: 1; }
+  .ps-status { font: 13px system-ui, sans-serif; letter-spacing: 0; color: var(--text-mute); }
+  .ps-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ps-actions .btn-primary, .ps-actions .btn-secondary { flex: 0 1 auto; min-width: 0; }
+  @media (max-width: 600px) {
+    .ps-actions .btn-primary, .ps-actions .btn-secondary { flex: 1 1 calc(50% - 8px); }
+  }

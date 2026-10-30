@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TOPICS } from '../data/topics';
 import type { Question } from '../types';
+import { CATEGORIES as CATS, categoryOf } from '../data/categories';
 import { sm2, cardKey, loadSRSCards, saveSRSCards, newCard, todayStr, type SRSCard, type SRSRating } from '../data/srs';
 
 interface DueCard {
@@ -15,15 +16,8 @@ interface SRSScreenProps {
   onBack: () => void;
 }
 
-const CATS = [
-  { key: 'anatomy',  label: 'Анатомія',    color: '#ff7b00', ids: ['osteology','myology','muscle-functions'] },
-  { key: 'bio',      label: 'Біомеханіка', color: '#4a9eff', ids: ['planes','spine','arms','legs','chest','shoulders','back','core'] },
-  { key: 'method',   label: 'Методика',    color: '#3ecf8e', ids: ['movement-patterns','pyramid','training-programming'] },
-  { key: 'other',    label: 'Інше',        color: '#a78bfa', ids: ['psych','nutrition'] },
-];
-
 function getCatColor(topicId: string): string {
-  return CATS.find(c => c.ids.includes(topicId))?.color ?? '#ff7b00';
+  return categoryOf(topicId).color;
 }
 
 function buildDueQueue(selectedIds: string[]): DueCard[] {
@@ -144,10 +138,7 @@ function SelectScreen({ onStart, onBack }: { onStart: (ids: string[]) => void; o
                       onClick={() => toggle(t.id)}
                     >
                       <div className="srs-tc-head">
-                        <span
-                          className="srs-tc-icon"
-                          dangerouslySetInnerHTML={{ __html: t.icon }}
-                        />
+                        <span className="srs-tc-icon">{t.icon}</span>
                         <div className={`srs-tc-check${on ? ' on' : ''}`}>
                           {on ? '✓' : ''}
                         </div>
@@ -320,7 +311,7 @@ export default function SRSScreen({ onBack }: SRSScreenProps) {
             <button
               className="next-btn show"
               onClick={() => setRevealed(true)}
-              style={{ background: 'linear-gradient(180deg,#2a2a2a,#1a1a1a)', boxShadow: 'none', border: '1px solid var(--border)' }}
+              style={{ background: 'var(--bg-card-hover)', color: 'var(--text)', boxShadow: 'none', border: '1px solid var(--border)' }}
             >
               👁 Показати відповідь
             </button>

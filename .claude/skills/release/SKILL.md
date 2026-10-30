@@ -18,8 +18,8 @@ If they confirm — proceed.
 
 ### 1. Check develop is ahead of main
 ```bash
-git -C /Users/emotion/Desktop/iron-academy fetch origin 2>&1
-git -C /Users/emotion/Desktop/iron-academy log origin/main..origin/develop --oneline 2>&1
+git -C /Users/emotion/Desktop/workout fetch origin 2>&1
+git -C /Users/emotion/Desktop/workout log origin/main..origin/develop --oneline 2>&1
 ```
 
 Show the user which commits will go in release. If develop has 0 commits ahead of main — скажи "Нічого нового для релізу" і зупинись.
@@ -30,10 +30,10 @@ gh pr create \
   --repo youthh/test-workout \
   --base main \
   --head develop \
-  --title "$(git -C /Users/emotion/Desktop/iron-academy log origin/main..origin/develop --oneline | head -1 | sed 's/^[a-f0-9]* //')" \
+  --title "$(git -C /Users/emotion/Desktop/workout log origin/main..origin/develop --oneline | head -1 | sed 's/^[a-f0-9]* //')" \
   --body "$(cat <<'EOF'
 ## Зміни
-$(git -C /Users/emotion/Desktop/iron-academy log origin/main..origin/develop --oneline)
+$(git -C /Users/emotion/Desktop/workout log origin/main..origin/develop --oneline)
 
 ## QA
 - [x] Білд проходить
@@ -53,8 +53,8 @@ gh pr merge --repo youthh/test-workout --squash --delete-branch=false 2>&1
 
 ### 4. Pull latest main locally
 ```bash
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" fetch origin 2>&1
-git -C /Users/emotion/Desktop/iron-academy -c credential.helper="!gh auth git-credential" pull origin main 2>&1
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" fetch origin 2>&1
+git -C /Users/emotion/Desktop/workout -c credential.helper="!gh auth git-credential" pull origin main 2>&1
 ```
 
 ### 5. Report

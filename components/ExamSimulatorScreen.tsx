@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TOPICS } from '../data/topics';
 import type { Topic, Question } from '../types';
+import { shuffleArray } from '../lib/utils';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
@@ -18,23 +19,16 @@ export interface SavedSimulator {
   currentIdx: number;
   questionCount: number;
   timerEnabled: boolean;
+  elapsed?: number;
 }
 
 interface ExamSimulatorScreenProps {
   onBack: () => void;
   onToast: (msg: string) => void;
   savedState?: SavedSimulator;
-  onSaveState: (s: SavedSimulator) => void;
+  onSaveState: (s: SavedSimulator | null) => void;
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function buildPool(topicId: string | 'all', count: number): SimQuestion[] {
   const pool: Array<{ question: Question; topicTitle: string }> = [];
@@ -58,13 +52,21 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
   const [questions, setQuestions] = useState<SimQuestion[]>(savedState?.questions ?? []);
   const [currentIdx, setCurrentIdx] = useState(savedState?.currentIdx ?? 0);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [startTime, setStartTime] = useState(0);
+  const [startTime, setStartTime] = useState(() => Date.now() - (savedState?.elapsed ?? 0) * 1000);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showReview, setShowReview] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const latest = useRef({ phase, questions, currentIdx, questionCount, timerEnabled, startTime, onSaveState });
+  latest.current = { phase, questions, currentIdx, questionCount, timerEnabled, startTime, onSaveState };
+
+  useEffect(() => () => {
+    const l = latest.current;
+    l.onSaveState(l.phase === 'exam'
+      ? { questions: l.questions, currentIdx: l.currentIdx, questionCount: l.questionCount, timerEnabled: l.timerEnabled, elapsed: Math.round((Date.now() - l.startTime) / 1000) }
+      : null);
+  }, []);
 
   function handleExit() {
-    onSaveState({ questions, currentIdx, questionCount, timerEnabled });
     setExitModal(false);
     onBack();
   }
@@ -79,12 +81,13 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
 
   useEffect(() => {
     if (phase !== 'exam' || !timerEnabled) return;
-    const totalSeconds = questionCount * 72; // ~72 сек на питання
-    setTimeLeft(totalSeconds);
+    const totalSeconds = questionCount * 72;
+    const spent = Math.round((Date.now() - latest.current.startTime) / 1000);
+    setTimeLeft(Math.max(1, totalSeconds - spent));
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          finishExam(questions, totalSeconds);
+          finishExam(latest.current.questions, totalSeconds);
           return 0;
         }
         return prev - 1;
@@ -154,7 +157,7 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
                 value={selectedTopic}
                 onChange={e => { setSelectedTopic(e.target.value); setQuestionCount(25); }}
                 style={{
-                  width: '100%', background: '#1d1d1d', border: '1px solid var(--border)',
+                  width: '100%', background: 'var(--bg-card)', border: '1px solid var(--border)',
                   color: 'var(--text)', borderRadius: 8, padding: '10px 12px',
                   fontFamily: 'inherit', fontSize: 14, cursor: 'pointer'
                 }}
@@ -178,7 +181,7 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
                     style={{
                       flex: '1 1 60px', padding: '10px 8px', borderRadius: 8,
                       border: `1px solid ${questionCount === n ? 'var(--accent)' : 'var(--border)'}`,
-                      background: questionCount === n ? 'rgba(230,57,70,0.12)' : '#1d1d1d',
+                      background: questionCount === n ? 'rgba(230,57,70,0.12)' : 'var(--bg-card)',
                       color: questionCount === n ? 'var(--accent)' : 'var(--text-dim)',
                       fontFamily: 'inherit', fontSize: 14, fontWeight: 700,
                       cursor: 'pointer', transition: 'all .15s'
@@ -190,13 +193,15 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
               </div>
             </div>
 
-            <div
+            <button
+              type="button"
+              aria-pressed={timerEnabled}
               onClick={() => setTimerEnabled(v => !v)}
               style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', fontFamily: 'inherit',
                 padding: '12px 14px', borderRadius: 10, cursor: 'pointer', marginBottom: 28,
                 border: `1px solid ${timerEnabled ? 'var(--accent)' : 'var(--border)'}`,
-                background: timerEnabled ? 'rgba(230,57,70,0.07)' : '#1d1d1d',
+                background: timerEnabled ? 'rgba(230,57,70,0.07)' : 'var(--bg-card)',
                 transition: 'all .2s'
               }}
             >
@@ -205,7 +210,7 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
               </span>
               <span style={{
                 width: 36, height: 20, borderRadius: 12, position: 'relative',
-                background: timerEnabled ? 'var(--accent)' : '#2a2a2a',
+                background: timerEnabled ? 'var(--accent)' : 'var(--border)',
                 transition: 'background .2s', flexShrink: 0
               }}>
                 <span style={{
@@ -215,7 +220,7 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
                   background: '#fff', transition: 'left .2s'
                 }} />
               </span>
-            </div>
+            </button>
 
             <div style={{ background: 'rgba(230,57,70,0.06)', border: '1px solid rgba(230,57,70,0.2)', borderRadius: 10, padding: '12px 14px', marginBottom: 24, fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.6 }}>
               ⚠️ У цьому режимі <b style={{ color: 'var(--text)' }}>немає зворотного зв'язку</b> під час іспиту. Правильні відповіді побачиш тільки в кінці — як на реальному іспиті.
@@ -327,7 +332,7 @@ export default function ExamSimulatorScreen({ onBack, onToast, savedState, onSav
                 style={{
                   width: 26, height: 26, borderRadius: 5, border: '2px solid',
                   borderColor: i === currentIdx ? 'var(--orange)' : q.chosen !== null ? 'var(--accent)' : 'var(--border)',
-                  background: i === currentIdx ? '#2a2a2a' : q.chosen !== null ? 'rgba(230,57,70,0.15)' : '#1d1d1d',
+                  background: i === currentIdx ? 'var(--border)' : q.chosen !== null ? 'rgba(230,57,70,0.15)' : 'var(--bg-card)',
                   color: i === currentIdx ? '#fff' : q.chosen !== null ? 'var(--accent)' : '#555',
                   fontSize: 10, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
                   transition: 'all .12s', flexShrink: 0

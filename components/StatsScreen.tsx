@@ -1,6 +1,7 @@
 'use client';
 import { TOPICS } from '../data/topics';
 import ProgressChart from './ProgressChart';
+import { lastDays } from '../lib/utils';
 
 export interface Stats {
   totalAnswered: number;
@@ -18,16 +19,6 @@ interface StatsScreenProps {
   onBack: () => void;
 }
 
-function buildHeatmapDays(): string[] {
-  const days: string[] = [];
-  const today = new Date();
-  for (let i = 83; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    days.push(d.toISOString().slice(0, 10));
-  }
-  return days;
-}
 
 function heatLevel(count: number): string {
   if (count === 0) return '';
@@ -42,7 +33,7 @@ export default function StatsScreen({ stats, streak, onBack }: StatsScreenProps)
     ? Math.round(stats.totalCorrect / stats.totalAnswered * 100)
     : 0;
 
-  const days = buildHeatmapDays();
+  const days = lastDays(84);
 
   return (
     <div className="quiz-screen active">
